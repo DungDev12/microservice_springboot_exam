@@ -3,23 +3,11 @@ spring:
     name: employee-api-gateway
   config:
     import: "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: employee-service
-              uri: lb://EMPLOYEE-SERVICE
-              predicates:
-                - Path=/api/employees/**
+
 server:
   port: ${SERVER_PORT:3000}
 
 eureka:
-  instance:
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
   client:
     service-url:
       defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka}
