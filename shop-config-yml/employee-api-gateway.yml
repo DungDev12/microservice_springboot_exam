@@ -8,3 +8,6 @@ spring:
               uri: lb://EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/employees/**
+ eureka:
+  instance:
+    prefer-ip-address: true
