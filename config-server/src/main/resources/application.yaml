@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:///C:/Code/Study/microservice/session07/medical-config-repo
+          default-label: main
+server:
+  port: 8888
