@@ -2,7 +2,7 @@ spring:
   application:
     name: employee-api-gateway
   config:
-    import: "optional:configserver:${CONFIG_GIT_SERVER}"
+    import: "optional:configserver:${CONFIG_GIT_SERVER:http://config-server:8888}"
 
 server:
   port: ${SERVER_PORT:3000}
@@ -10,4 +10,4 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA}
+      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka}
