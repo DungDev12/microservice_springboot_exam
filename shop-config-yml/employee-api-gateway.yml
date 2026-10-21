@@ -5,6 +5,6 @@ spring:
         webflux:
           routes:
             - id: employee-service
-              uri: lb://employee-service
+              uri: lb://EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/employees/**
