@@ -2,7 +2,7 @@ spring:
   application:
     name: employee-api-gateway
   config:
-    import: "optional:configserver:${CONFIG_GIT_SERVER:http://config-server:8888}"
+    import: "configserver:${CONFIG_GIT_SERVER:http://localhost:8888}"
 
 server:
   port: ${SERVER_PORT:3000}
