@@ -5,7 +5,13 @@ spring:
     config:
       server:
         git:
-          uri: file:///C:/Code/Study/microservice/session07/medical-config-repo
-          default-label: main
+          uri: ${GIT_URI}
+          default-label: ${GIT_DEFAULT_LABEL}
+          search-paths: ${CONFIG_SEARCH_PATHS}
 server:
-  port: 8888
+  port: ${SERVER_PORT:8888}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA}

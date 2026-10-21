@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: employee-service
+              uri: lb://employee-service
+              predicates:
+                - Path=/api/employees/**

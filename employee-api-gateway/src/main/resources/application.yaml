@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: employee-api-gateway
+  config:
+    import: "optional:configserver:${CONFIG_GIT_SERVER}"
+
+server:
+  port: ${SERVER_PORT:3000}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA}
