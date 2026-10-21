@@ -5,13 +5,13 @@ spring:
     config:
       server:
         git:
-          uri: ${GIT_URI}
-          default-label: ${GIT_DEFAULT_LABEL}
-          search-paths: ${CONFIG_SEARCH_PATHS}
+          uri: ${GIT_URI:https://github.com/DungDev12/microservice_springboot_exam}
+          default-label: ${GIT_DEFAULT_LABEL:main}
+          search-paths: ${CONFIG_SEARCH_PATHS:shop-config-yml}
 server:
   port: ${SERVER_PORT:8888}
 
 eureka:
   client:
     service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA}
+      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka}
