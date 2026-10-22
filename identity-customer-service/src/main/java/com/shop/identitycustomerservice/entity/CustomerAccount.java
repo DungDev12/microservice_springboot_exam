@@ -23,6 +23,7 @@ public class CustomerAccount extends BaseUuidEntity {
     @NotBlank(message = "Mật khẩu không được để trống")
     private String passwordHash;
 
+    @Builder.Default
     @Column(name = "is_active") // Tài khoản được kích hoạt hay không
     private boolean isActive = true;
 

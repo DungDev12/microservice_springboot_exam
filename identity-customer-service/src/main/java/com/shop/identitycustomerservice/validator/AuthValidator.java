@@ -16,7 +16,7 @@ public class AuthValidator {
         checkEmail(request.email());
     }
 
-    protected void checkEmail(String email){
+    public void checkEmail(String email){
         if(customerAccountRepository.existsByEmailIgnoreCase(email)){
             throw new ValidationException("Email already exists");
         }

@@ -26,4 +26,12 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(authService.registerAccount(request));
     }
+
+    @PostMapping("check-email")
+    public ResponseEntity<?> checkEmail(
+            @RequestBody String email
+    ){
+        return  ResponseEntity.status(HttpStatus.OK)
+                .body(authService.checkEmail(email));
+    }
 }
