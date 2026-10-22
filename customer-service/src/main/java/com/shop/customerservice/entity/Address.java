@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Table(name = "address")
+@Table(name = "addresses")
 public class Address extends BaseLongEntity {
 
     private String fullName; // Họ tên người nhận hàng
@@ -28,9 +28,8 @@ public class Address extends BaseLongEntity {
     @Column(name = "is_default")
     private boolean isDefault = false; // Địa chỉ mặc định
 
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_uuid")
     private Customer customer;
+
 }

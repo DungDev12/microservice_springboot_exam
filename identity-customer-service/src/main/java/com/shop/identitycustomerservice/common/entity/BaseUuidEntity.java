@@ -12,6 +12,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @MappedSuperclass
 @Getter
 @Setter

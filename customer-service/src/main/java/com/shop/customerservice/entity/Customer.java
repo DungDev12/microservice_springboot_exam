@@ -22,8 +22,7 @@ public class Customer extends BaseUUIDEntity {
     private String email; // Địa chỉ email
     private String phoneNumber; // Số điện thoại
 
-    @OneToMany(
-        mappedBy = "address"
-    )
+    @OneToMany(mappedBy = "customer")
     private List<Address> addresses; // Danh sách địa chỉ giao hàng
+
 }

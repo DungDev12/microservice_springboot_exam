@@ -5,7 +5,6 @@ import com.shop.identitycustomerservice.common.enums.StatusAccount;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Entity
@@ -20,13 +19,6 @@ public class CustomerAccount extends BaseUuidEntity {
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
     private String email;
-
-    @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(
-            regexp = "^0\\d{9}$",
-            message = "Số điện thoại không hợp lệ"
-    )
-    private String phoneNumber; // 0765775120
 
     @NotBlank(message = "Mật khẩu không được để trống")
     private String passwordHash;
