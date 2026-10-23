@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -24,9 +27,11 @@ public class CustomerAccount extends BaseUuidEntity {
     private String passwordHash;
 
     @Builder.Default
-    @Column(name = "is_active") // Tài khoản được kích hoạt hay không
-    private boolean isActive = true;
-
     @Enumerated(EnumType.STRING)
-    private StatusAccount status = StatusAccount.USED;
+    private StatusAccount status = StatusAccount.PENDING_VERIFICATION;
+
+    private LocalDateTime verified_at;
+
+    @OneToMany(mappedBy = "customerAccount")
+    private List<RefreshToken> refreshTokens;
 }

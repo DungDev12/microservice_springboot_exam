@@ -1,7 +1,7 @@
 package com.shop.identitycustomerservice.common.enums;
 
 public enum StatusAccount {
-    USED,
+    PENDING_VERIFICATION,
     BLOCKED,
-    CREATED
+    ACTIVE,
 }
