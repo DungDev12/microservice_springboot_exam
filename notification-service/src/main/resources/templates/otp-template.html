@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác thực mã OTP</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+<div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 8px; text-align: center">
+    <p>Mã OTP của bạn là:</p>
+    <strong style="color: #205efd; font-size: 24px;" th:text="${otpCode}">123456</strong>
+    <p style="color: #777; font-size: 13px;">Mã này sẽ hết hạn sau xác thực trong <strong th:text="${ttl}">1 phút</strong>.</p>
+</div>
+</body>
+</html>

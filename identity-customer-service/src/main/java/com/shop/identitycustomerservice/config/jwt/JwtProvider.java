@@ -51,4 +51,15 @@ public class JwtProvider {
     }
 
 
+    public String getUuidFromToken(String token) {
+        SecretKey key= Keys.hmacShaKeyFor(
+                secretKey.getBytes(StandardCharsets.UTF_8)
+        );
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("uuid", String.class);
+    }
 }

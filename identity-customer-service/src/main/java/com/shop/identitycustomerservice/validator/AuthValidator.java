@@ -6,6 +6,7 @@ import com.shop.identitycustomerservice.dto.request.RegisterAccountRequest;
 import com.shop.identitycustomerservice.entity.CustomerAccount;
 import com.shop.identitycustomerservice.exception.AccessDeniedException;
 import com.shop.identitycustomerservice.exception.AccountNotVerifiedException;
+import com.shop.identitycustomerservice.exception.AlreadyExistsException;
 import com.shop.identitycustomerservice.repository.CustomerAccountRepository;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,7 @@ public class AuthValidator {
      * */
     public void loginValidation(CustomerAccount account, LoginAccountRequest request) {
         // Kiểm tra mật khẩu
-        if(!checkPassword(request.password(), account.getPasswordHash())){
-            throw new AccessDeniedException("Mật khẩu không khớp", HttpStatus.UNAUTHORIZED);
-        }
+        validationPassword(account, request);
         // Kiểm tra trạng thái
         checkStatus(account.getStatus());
     }
@@ -44,13 +43,19 @@ public class AuthValidator {
     // Kiểm tra email có tồn tại không
     public void checkEmail(String email){
         if(customerAccountRepository.existsByEmailIgnoreCase(email)) {
-            throw new ValidationException("Email already exists");
+            throw new AlreadyExistsException("Email đã tồn tại");
         }
     }
 
     public void checkStatus(StatusAccount status){
         if (status == StatusAccount.PENDING_VERIFICATION) {
             throw new AccountNotVerifiedException("Tài khoản chưa được xác thực");
+        }
+    }
+
+    public void validationPassword(CustomerAccount account, LoginAccountRequest request){
+        if(!checkPassword(request.password(), account.getPasswordHash())){
+            throw new AccessDeniedException("Mật khẩu không khớp", HttpStatus.UNAUTHORIZED);
         }
     }
 

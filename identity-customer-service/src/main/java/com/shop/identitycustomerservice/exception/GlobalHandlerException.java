@@ -25,7 +25,7 @@ public class GlobalHandlerException {
                     error.put("message",fieldError.getDefaultMessage());
                     return error;
                 }).toList();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.errorValidation(errors));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.errorValidation(errors, "Dữ liệu không hợp lệ"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -42,7 +42,22 @@ public class GlobalHandlerException {
 
     @ExceptionHandler(AccountNotVerifiedException.class)
     public ResponseEntity<ErrorResponse<?>> handleAccountNotVerifiedException(AccountNotVerifiedException e){
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("code", "EMAIL_NOT_VERIFIED");
+        errors.put("nextStep", "VERIFY_EMAIL");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.error(e.getMessage(),HttpStatus.BAD_REQUEST));
+                .body(ErrorResponse.errorValidation(errors,e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse<?>> handleAlreadyExists(AlreadyExistsException e){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.error(e.getMessage(),HttpStatus.CONFLICT));
+    }
+
+    @ExceptionHandler(InternalServerException.class)
+    public  ResponseEntity<ErrorResponse<?>> handleInternalServerException(InternalServerException e){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ErrorResponse.error(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

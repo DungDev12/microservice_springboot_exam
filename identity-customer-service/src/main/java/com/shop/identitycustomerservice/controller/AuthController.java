@@ -1,9 +1,6 @@
 package com.shop.identitycustomerservice.controller;
 
-import com.shop.identitycustomerservice.dto.request.CheckEmailRequest;
-import com.shop.identitycustomerservice.dto.request.LoginAccountRequest;
-import com.shop.identitycustomerservice.dto.request.RefreshTokenRequest;
-import com.shop.identitycustomerservice.dto.request.RegisterAccountRequest;
+import com.shop.identitycustomerservice.dto.request.*;
 import com.shop.identitycustomerservice.dto.response.ApiResponse;
 import com.shop.identitycustomerservice.dto.response.RegisterAccountResponse;
 import com.shop.identitycustomerservice.service.AuthService;
@@ -11,10 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -52,6 +46,27 @@ public class AuthController {
                         "Tài khoản có thể tạo",
                         HttpStatus.OK)
                 );
+    }
+
+    @PostMapping("verify-otp/resend")
+    public ResponseEntity<ApiResponse<?>> resendOtpWithEmail(
+            @RequestParam("email") String email
+    ){
+        authService.resendVerificationCode(email);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(
+                        null,
+                        "Gửi lại mã xác thực OTP thành công",
+                        HttpStatus.OK
+                ));
+    }
+
+    @PostMapping("verify-otp")
+    public ResponseEntity<ApiResponse<?>> verifyOtp(
+            @RequestBody OtpVerifyRequest request
+            ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(authService.otpVerify(request), "Xác thực thành công", HttpStatus.OK));
     }
 
     @PostMapping("refresh-token")

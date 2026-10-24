@@ -9,6 +9,17 @@ spring:
     username: ${DB_USERNAME:tuandung}
     password: ${DB_PASSWORD:TuanDung@1207}
 
+
+  grpc:
+    server:
+      port: 9099
+      host: 0.0.0.0 # Cho phép ngoài mạng
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
 server:
   port: ${SERVER_PORT:8082}
 
@@ -16,3 +27,7 @@ eureka:
   client:
     service-url:
       defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      grpc-port: "9099"

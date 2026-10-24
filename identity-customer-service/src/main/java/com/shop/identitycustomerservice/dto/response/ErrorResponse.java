@@ -18,6 +18,7 @@ public class ErrorResponse<T> {
     private String message;
     private T errors;
     private LocalDateTime timestamp;
+    private String path;
 
     public static <T> ErrorResponse<?> error( String message, HttpStatus status) {
         return ErrorResponse.builder()
@@ -28,11 +29,12 @@ public class ErrorResponse<T> {
                 .build();
     }
 
-    public static <T> ErrorResponse<?> errorValidation(T data) {
+
+    public static <T> ErrorResponse<?> errorValidation(T data, String message) {
         return ErrorResponse.builder()
                 .success(false)
                 .statusCode(400)
-                .message("Dữ liệu đầu vào không hợp lệ")
+                .message(message)
                 .errors(data)
                 .timestamp(LocalDateTime.now())
                 .build();

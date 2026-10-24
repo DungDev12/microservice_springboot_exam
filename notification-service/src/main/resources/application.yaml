@@ -5,6 +5,8 @@ spring:
     import:
       - "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
       - "vault://"
+      - "optional:file:.env[.properties]"
+
   cloud:
     vault:
       uri: ${VAULT_URI:http://192.168.20.3:8200}
@@ -15,11 +17,19 @@ spring:
         backend: ${VAULT_KV_BACKEND:shop}
         default-context: ${VAULT_KV_DEFAULT:notification}
         profile-separator: '/'
+
   mail:
     host: ${MAIL_HOST:${mail.host:smtp.gmail.com}}
     port: ${MAIL_PORT:${mail.port:587}}
     username: ${MAIL_USERNAME:${mail.username}}
     password: ${MAIL_PASSWORD:${mail.password}}
+    properties:
+      mail:
+        smtp:
+          auth: true # Bật xác thực SMTP
+          starttls:
+            enable: true # Bật TLS
+            required: true
 
   kafka:
     bootstrap-servers: http://192.168.20.3:9092
@@ -32,7 +42,6 @@ spring:
 
       properties:
         spring.json.trusted.packages: "com.shop.*"
-        spring.json.value.default.type: com.shop.notificationservice.dto.events.NotificationEvent
         spring.json.use.type.headers: false
 
 

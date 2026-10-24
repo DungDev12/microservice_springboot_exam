@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.shop.grpc.shared"; // Package chung cho mã sinh ra
+
+service CustomerGrpcService {
+  rpc CreateProfile (CreateProfileRequest) returns (CreateProfileResponse);
+}
+
+message CreateProfileRequest {
+  string accountUuid = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string dateBirth = 4; // Định dạng YYYY-MM-DD
+  string phoneNumber = 5;
+}
+
+message CreateProfileResponse {
+  bool success = 1;
+  string message = 2;
+}

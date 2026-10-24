@@ -5,11 +5,25 @@ spring:
     import:
       - "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
       - "vault://"
+      - optional:file:.env[.properties]
+  grpc:
+    client:
+      channels:
+        customer-grpc-service:
+          address: "discovery:///CUSTOMER-SERVICE"
+          negotiation-type: plaintext
 
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/test}
     username: ${DB_USERNAME:tuandung}
     password: ${DB_PASSWORD:TuanDung@1207}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.20.3}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:TuanDung@1207}
+      connect-timeout: 2s
   cloud:
     vault:
       uri: ${VAULT_URI:http://192.168.20.3:8200}
@@ -20,8 +34,9 @@ spring:
         backend: ${VAULT_KV_BACKEND:shop}
         default-context: ${VAULT_KV_DEFAULT:customer}
         profile-separator: '/'
+
   kafka:
-    bootstrap-servers: http://192.168.20.3:9092
+    bootstrap-servers: ${KAFKA_SERVER:http://192.168.20.3:9092}
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -34,3 +49,9 @@ eureka:
   client:
       service-url:
         defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
+
+otp:
+  # Tạo ở link https://mariushosting.com/opensslrandhex32.html
+  secret: ${otp.hmac.secret}
+  ttl-seconds: 120
+  max-attempts: 5

@@ -20,6 +20,7 @@ public class Address extends BaseLongEntity {
     private String city; // Thành phố
     private String zip; // Mã thành phố
     private String country; // Quốc gia
+    private String houseNumber; // Địa chỉ nhà
     private String phoneNumber; // Số điện thoại liên hệ
 
     @Enumerated(EnumType.STRING)

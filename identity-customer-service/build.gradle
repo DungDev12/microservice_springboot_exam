@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.1'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.google.protobuf' version '0.9.6'
 }
 
 group = 'com.shop'
@@ -20,6 +21,7 @@ repositories {
 
 ext {
     set('springCloudVersion', "2025.1.3")
+    set('grpcVersion', "1.74.0")
 }
 
 dependencies {
@@ -46,6 +48,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
 
+    // Client gRPC đi hỏi Customer
+    implementation'org.springframework.boot:spring-boot-starter-grpc-client'
+    implementation 'io.grpc:grpc-netty-shaded'
+    compileOnly 'jakarta.annotation:jakarta.annotation-api:3.0.0'
+
+    // Redis xử lý các cache
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -65,6 +75,29 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.5"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+
+    generateProtoTasks {
+        all().configureEach { task ->
+            task.builtins {
+                java {} // Sinh ra các class Message (HelloRequest, HelloResponse)
+            }
+            task.plugins {
+                grpc {} // Sinh ra các class Stub (SimpleGrpc, SimpleBlockingStub)
+            }
+        }
     }
 }
 

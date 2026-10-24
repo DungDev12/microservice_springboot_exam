@@ -10,24 +10,31 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class NotificationEventProducer implements INotificationEventProducer {
-    private final KafkaTemplate<String, NotificationEvent> kafkaTemplate;
 
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public void send(NotificationEvent notificationEvent) {
-
+    public void send(NotificationEvent event, String TOPIC) {
+        kafkaTemplate.send(TOPIC, event.uuid().toString(), event)
+              .whenComplete((res, ex) -> {
+                  if (ex != null) {
+                      log.error(
+                              "Failed to send notification event: {}",
+                              event.uuid(),
+                              ex
+                      );
+                  }
+              });
     }
 
     @Override
-    public void sendVerificationCode(NotificationEvent notificationEvent) {
-        String TOPIC = "verify-account-events";
-
-        kafkaTemplate.send(TOPIC, notificationEvent.getUuid().toString(), notificationEvent)
+    public void sendVerificationCode(OtpNotificationEvent event, String TOPIC) {
+        kafkaTemplate.send(TOPIC, event.uuid().toString(), event)
                 .whenComplete((res, ex) -> {
                     if (ex != null) {
                         log.error(
                                 "Failed to send notification event: {}",
-                                notificationEvent.getUuid().toString(),
+                                event.uuid(),
                                 ex
                         );
                         return;
