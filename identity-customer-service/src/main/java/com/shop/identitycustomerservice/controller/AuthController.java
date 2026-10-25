@@ -66,7 +66,8 @@ public class AuthController {
             @RequestBody OtpVerifyRequest request
             ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(authService.otpVerify(request), "Xác thực thành công", HttpStatus.OK));
+                .body(ApiResponse.success(authService.otpVerify(request),
+                        "Xác thực thành công", HttpStatus.OK));
     }
 
     @PostMapping("refresh-token")
@@ -77,5 +78,14 @@ public class AuthController {
                 .body(ApiResponse.success(authService.refreshAccount(request),
                         "Tạo token mới thành công",
                         HttpStatus.OK));
+    }
+
+    @PostMapping("password/reset")
+    public ResponseEntity<ApiResponse<?>> forgetPassword(
+            @Valid @RequestParam ResetPasswordOTPRequest request
+    ){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(authService.resetPasswordOTP(request),
+                        "Gửi mã khôi phục OTP thành công", HttpStatus.OK));
     }
 }

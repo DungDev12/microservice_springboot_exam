@@ -9,6 +9,7 @@ import com.shop.identitycustomerservice.dto.request.*;
 import com.shop.identitycustomerservice.dto.response.LoginAccountResponse;
 import com.shop.identitycustomerservice.dto.response.OtpVerifyResponse;
 import com.shop.identitycustomerservice.dto.response.RegisterAccountResponse;
+import com.shop.identitycustomerservice.dto.response.ResetPasswordOTPResponse;
 import com.shop.identitycustomerservice.entity.CustomerAccount;
 import com.shop.identitycustomerservice.entity.RefreshToken;
 import com.shop.identitycustomerservice.event.NotificationEvent;
@@ -140,6 +141,15 @@ public class AuthService implements IAuthService {
     public boolean checkEmail(CheckEmailRequest request) {
         authValidator.checkEmail(request.email());
         return true;
+    }
+
+    @Override
+    public ResetPasswordOTPResponse resetPasswordOTP(ResetPasswordOTPRequest request) {
+        CustomerAccount customerAccount = customerAccountRepository.findByEmail(request.email())
+                .orElseThrow(() -> new AccessDeniedException("Email không tồn tại", HttpStatus.UNAUTHORIZED));
+
+        otpService.generateOtpAndSendEmail(customerAccount);
+        return null;
     }
 
 
