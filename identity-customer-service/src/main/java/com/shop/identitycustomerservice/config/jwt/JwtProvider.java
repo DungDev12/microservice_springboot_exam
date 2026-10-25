@@ -1,5 +1,6 @@
 package com.shop.identitycustomerservice.config.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -51,15 +53,21 @@ public class JwtProvider {
     }
 
 
-    public String getUuidFromToken(String token) {
+    public Map<String, String> getUuidFromToken(String token) {
         SecretKey key= Keys.hmacShaKeyFor(
                 secretKey.getBytes(StandardCharsets.UTF_8)
         );
-        return Jwts.parser()
+
+        Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .get("uuid", String.class);
+                .getPayload();
+
+
+        return Map.of(
+                "uuid", claims.getId(),
+                "email", claims.getSubject()
+        );
     }
 }

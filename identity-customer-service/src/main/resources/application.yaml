@@ -41,6 +41,11 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: >-
+          otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
+          welcome:com.shop.identitycustomerservice.event.NotificationEvent
+         
 
 server:
   port: ${SERVER_PORT:8080}
@@ -53,5 +58,5 @@ eureka:
 otp:
   # Tạo ở link https://mariushosting.com/opensslrandhex32.html
   secret: ${otp.hmac.secret}
-  ttl-seconds: 120
+  ttl-seconds: 3600
   max-attempts: 5

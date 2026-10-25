@@ -32,7 +32,7 @@ spring:
             required: true
 
   kafka:
-    bootstrap-servers: http://192.168.20.3:9092
+    bootstrap-servers: 192.168.20.3:9092
 
     consumer:
       group-id: notification-service-group
@@ -41,8 +41,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
       properties:
-        spring.json.trusted.packages: "com.shop.*"
-        spring.json.use.type.headers: false
+        spring.json.trusted.packages: "com.shop.notificationservice.dto.events"
+        spring.json.use.type.headers: true
+        spring.json.type.mapping: >-
+          otp:com.shop.notificationservice.dto.events.OtpNotificationEvent,
+          welcome:com.shop.notificationservice.dto.events.NotificationEvent
 
 
 server:

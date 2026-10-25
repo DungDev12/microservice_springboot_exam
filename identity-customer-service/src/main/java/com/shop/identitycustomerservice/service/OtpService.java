@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.HexFormat;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +37,7 @@ public class OtpService implements IOtpService {
     public OtpService(
             StringRedisTemplate redisTemplate,
             @Value("${otp.secret}") String secret,
-            @Value("${otp.ttl-seconds:120}") long ttlSeconds,
+            @Value("${otp.ttl-seconds:360000}") long ttlSeconds,
             @Value("${otp.max-attempts:5}") int maxAttempts,
             NotificationEventProducer notificationEventProducer
     ) {
@@ -74,16 +75,16 @@ public class OtpService implements IOtpService {
                      account.getUuid(),
                      account.getEmail(),
                      otp,
-                     60
+                     ttlSeconds
              ),
                 "verify-customer-account-events"
         );
     }
 
     @Override
-    public boolean verifyOtp(String accountId, OtpVerifyRequest request) {
-        String key = otpKey(accountId);
-        String attemptKey = attemptKey(accountId);
+    public boolean verifyOtp(Map<String, String> account, OtpVerifyRequest request) {
+        String key = otpKey(account.get("uuid"));
+        String attemptKey = attemptKey(account.get("uuid"));
 
         // Lấy hash OTP từ Redis
         String otpHash = redisTemplate.opsForValue().get(key);
@@ -95,7 +96,7 @@ public class OtpService implements IOtpService {
         }
 
         // Hash OTP người dùng nhập
-        String inputHash = hmac(accountId + ":" + request.otp());
+        String inputHash = hmac(account.get("uuid") + ":" + request.otp());
 
         // Check otp đã hash
         boolean matches = MessageDigest.isEqual(
@@ -113,8 +114,8 @@ public class OtpService implements IOtpService {
 
         notificationEventProducer.send(
                 new NotificationEvent(
-                        UUID.fromString(accountId),
-                        request.email()
+                        UUID.fromString(account.get("uuid")),
+                        account.get("email")
                 ),
                 "hello-new-customer-events"
         );

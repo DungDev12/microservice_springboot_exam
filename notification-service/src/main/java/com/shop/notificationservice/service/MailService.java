@@ -24,6 +24,10 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
+    @KafkaListener(
+            topics = "verify-customer-account-events",
+            groupId = "notification-service-group"
+    )
     public void verifyCustomerAccountEvent(OtpNotificationEvent event) {
         log.info("Nhận sự kiện xác thực email cho: {}", event.toEmail());
         try {
@@ -43,7 +47,7 @@ public class MailService {
 
             // 3. Cấu hình các thông tin gửi mail cơ bản
             helper.setFrom("saigonithcm.vn@gmail.com", "Shop Online");
-            helper.setTo("dungdev12@gmail.com"); // Điền email người nhận từ event
+            helper.setTo(event.toEmail()); // Điền email người nhận từ event
             helper.setSubject("Mã OTP xác thực tài khoản của bạn");
             helper.setText(htmlContent, true); // Đặt tham số thứ hai là TRUE để xác nhận gửi dạng HTML
 
@@ -56,6 +60,10 @@ public class MailService {
 
     }
 
+    @KafkaListener(
+            topics = "hello-new-customer-events",
+            groupId = "notification-service-group"
+    )
     public void helloNewCustomerMail(NotificationEvent event){
         log.info("Nhận sự kiện chào người mới email cho: {}", event.toEmail());
         try {
@@ -72,7 +80,7 @@ public class MailService {
 
             // 3. Cấu hình các thông tin gửi mail cơ bản
             helper.setFrom("saigonithcm.vn@gmail.com", "Shop Online");
-            helper.setTo("dungdev12@gmail.com"); // Điền email người nhận từ event
+            helper.setTo(event.toEmail()); // Điền email người nhận từ event
             helper.setSubject("Kính chào quý khách");
             helper.setText(htmlContent, true); // Đặt tham số thứ hai là TRUE để xác nhận gửi dạng HTML
 
@@ -84,7 +92,7 @@ public class MailService {
         }
     }
 
-    private String formatTtlTime(int ttl) {
+    private String formatTtlTime(long ttl) {
 
         // Chuyển số sang Duration dựa trên số giây
         Duration duration = Duration.ofSeconds(ttl);

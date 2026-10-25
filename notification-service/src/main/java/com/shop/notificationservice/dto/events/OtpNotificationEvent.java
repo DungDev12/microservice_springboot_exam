@@ -7,6 +7,6 @@ public record OtpNotificationEvent(
         UUID uuid,
         String toEmail,
         String otp,
-        int ttl
+        long ttl
 )  {
 }
