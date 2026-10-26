@@ -10,4 +10,6 @@ public interface CustomerAccountRepository extends JpaRepository<CustomerAccount
     boolean existsByEmailIgnoreCase(String email);
 
     Optional<CustomerAccount> findByEmail(String email);
+
+    Optional<CustomerAccount> findByUuid(UUID uuid);
 }

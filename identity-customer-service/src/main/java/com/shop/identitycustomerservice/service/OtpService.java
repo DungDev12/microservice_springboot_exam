@@ -37,7 +37,7 @@ public class OtpService implements IOtpService {
     public OtpService(
             StringRedisTemplate redisTemplate,
             @Value("${otp.secret}") String secret,
-            @Value("${otp.ttl-seconds:360000}") long ttlSeconds,
+            @Value("${otp.ttl-seconds:300}") long ttlSeconds,
             @Value("${otp.max-attempts:5}") int maxAttempts,
             NotificationEventProducer notificationEventProducer
     ) {
@@ -77,7 +77,7 @@ public class OtpService implements IOtpService {
                      otp,
                      ttlSeconds
              ),
-                "verify-customer-account-events"
+                "otp-customer-account-events"
         );
     }
 
@@ -111,14 +111,6 @@ public class OtpService implements IOtpService {
         // Khớp thì xoá và gửi kết quả true
         redisTemplate.delete(key);
         redisTemplate.delete(attemptKey);
-
-        notificationEventProducer.send(
-                new NotificationEvent(
-                        UUID.fromString(account.get("uuid")),
-                        account.get("email")
-                ),
-                "hello-new-customer-events"
-        );
         return true;
     }
 

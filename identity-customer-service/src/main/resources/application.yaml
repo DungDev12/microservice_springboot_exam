@@ -58,5 +58,5 @@ eureka:
 otp:
   # Tạo ở link https://mariushosting.com/opensslrandhex32.html
   secret: ${otp.hmac.secret}
-  ttl-seconds: 3600
+  ttl-seconds: 300
   max-attempts: 5
