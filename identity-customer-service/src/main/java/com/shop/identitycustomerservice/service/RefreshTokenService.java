@@ -24,7 +24,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .customerAccount(account)
                 .token(jwtProvider.generateRefreshToken(account.getEmail(),account.getUuid()))
-                .expiryDate(Instant.now().plusMillis(jwtProvider.getJwtRefreshExpirationMs()))
+                .expiryDate(Instant.now().plusMillis(jwtProvider.getRefreshExpirationMs()))
                 .build();
 
         return refreshTokenRepository.save(refreshToken);

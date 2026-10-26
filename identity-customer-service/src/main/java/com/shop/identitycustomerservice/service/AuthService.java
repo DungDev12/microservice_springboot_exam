@@ -6,37 +6,43 @@ import com.shop.identitycustomerservice.client.grpc.CustomerGrpcClient;
 import com.shop.identitycustomerservice.common.enums.StatusAccount;
 import com.shop.identitycustomerservice.config.jwt.JwtProvider;
 import com.shop.identitycustomerservice.dto.request.*;
-import com.shop.identitycustomerservice.dto.response.LoginAccountResponse;
-import com.shop.identitycustomerservice.dto.response.OtpVerifyResponse;
-import com.shop.identitycustomerservice.dto.response.RegisterAccountResponse;
-import com.shop.identitycustomerservice.dto.response.ResetPasswordOTPResponse;
+import com.shop.identitycustomerservice.dto.response.*;
 import com.shop.identitycustomerservice.entity.CustomerAccount;
 import com.shop.identitycustomerservice.entity.RefreshToken;
 import com.shop.identitycustomerservice.event.NotificationEvent;
 import com.shop.identitycustomerservice.event.NotificationEventProducer;
 import com.shop.identitycustomerservice.exception.AccessDeniedException;
 import com.shop.identitycustomerservice.exception.InternalServerException;
+import com.shop.identitycustomerservice.exception.NotFoundException;
 import com.shop.identitycustomerservice.repository.CustomerAccountRepository;
-import com.shop.identitycustomerservice.repository.RefreshTokenRepository;
+import com.shop.identitycustomerservice.security.CurrentUserService;
+import com.shop.identitycustomerservice.security.UserPrincipal;
 import com.shop.identitycustomerservice.service.interfaces.IAuthService;
 import com.shop.identitycustomerservice.validator.AuthValidator;
+import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
 
     private final CustomerAccountRepository customerAccountRepository;
+    private final NotificationEventProducer notificationEventProducer;
     private final RefreshTokenService  refreshTokenService;
     private final AuthValidator authValidator;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final CustomerGrpcClient customerGrpcClient;
     private final OtpService otpService;
+    private final CurrentUserService currentUserService;
 
     @Override
     @Transactional
@@ -114,11 +120,39 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public OtpVerifyResponse otpVerify(OtpVerifyRequest request) {
-        boolean matches = otpService.verifyOtp(jwtProvider.getUuidFromToken(request.accessToken()), request);
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        // Tìm tài khoản bằng và đổi từ UserPrincipal
+        CustomerAccount account = customerAccountRepository
+                .findByUuid(currentUserService.getCurrentUser().getId())
+                .orElseThrow(() -> new AccessDeniedException(
+                        "Không tìm thấy tài khoản",
+                        HttpStatus.UNAUTHORIZED
+                ));
+        authValidator.changePasswordValidator(request, account);
+
+        account.setPasswordHash(passwordEncoder.encode(request.password()));
+
+        customerAccountRepository.save(account);
+    }
+
+    @Override
+    public OtpVerifyResponse otpVerifyNewAccount(OtpVerifyRequest request) {
+        Map<String, String> jwtParse = jwtProvider.getUuidFromToken(request.token());
+        boolean matches = otpService.verifyOtp(jwtParse, request);
         if(!matches) {
             throw new AccessDeniedException("Mã OTP không khớp", HttpStatus.UNAUTHORIZED);
         }
+
+        // Xác thực thành cồn thì gửi mail thông báo chào mừng người mới
+        notificationEventProducer.send(
+                new NotificationEvent(
+                        UUID.fromString(jwtParse.get("uuid")),
+                        jwtParse.get("email")
+                ),
+                "hello-new-customer-events"
+        );
+
         return new OtpVerifyResponse(
                 true,
                 "Người dùng xác thực thành công"
@@ -145,11 +179,62 @@ public class AuthService implements IAuthService {
 
     @Override
     public ResetPasswordOTPResponse resetPasswordOTP(ResetPasswordOTPRequest request) {
+        // Kiểm tra email có tồn tại không ?
         CustomerAccount customerAccount = customerAccountRepository.findByEmail(request.email())
                 .orElseThrow(() -> new AccessDeniedException("Email không tồn tại", HttpStatus.UNAUTHORIZED));
 
+        // Tạo resetToken duy trì trong thời gian ngắn
+        String resetToken =  jwtProvider.generateToken(customerAccount.getEmail(),customerAccount.getUuid());
+
+        // Nếu tồn tại gửi OTP qua email tài khoản
         otpService.generateOtpAndSendEmail(customerAccount);
-        return null;
+        return new ResetPasswordOTPResponse(
+                true,
+                "/password/reset/verify-otp",
+                "VERIFY-OTP",
+                resetToken
+        );
+    }
+
+    @Override
+    public VerifyResetPasswordOTPResponse verifyOtpForResetPassword(OtpVerifyRequest request) {
+
+        // Kiểm tra resetToken hợp lệ không
+        Map<String, String> jwtParse = jwtProvider.getUuidFromToken(request.token());
+        boolean matches = otpService.verifyOtp(jwtParse, request);
+        if(!matches) {
+            throw new AccessDeniedException("Mã OTP không khớp", HttpStatus.UNAUTHORIZED);
+        }
+
+        // Tạo resetToken duy trì trong thời gian ngắn và kèm theo quyền đổi mật khẩu
+        String resetToken =  jwtProvider.generatePasswordResetToken(jwtParse.get("email"), UUID.fromString(jwtParse.get("uuid")));
+
+        return new VerifyResetPasswordOTPResponse(
+                true,
+                "/password/reset/confirm",
+                "CHANGE_PASSWORD",
+                resetToken
+        );
+    }
+
+    @Override
+    public boolean confirmResetPasswordOtp(ConfirmResetPasswordRequest request) {
+        Map<String, String> jwtParse = jwtProvider.getPermissionResetPassword(request.token());
+
+        if(!jwtParse.get("permission").equals("PASSWORD_RESET")) {
+            throw new AccessDeniedException("Bạn không có quyền khôi phục mật khẩu", HttpStatus.FORBIDDEN);
+        }
+
+        CustomerAccount account = customerAccountRepository.findByUuid(
+                UUID.fromString(jwtParse.get("uuid"))
+        ).orElseThrow(() -> new NotFoundException("Không tìm thấy"));
+
+        account.setPasswordHash(
+                passwordEncoder.encode(request.password())
+        );
+
+        customerAccountRepository.save(account);
+        return true;
     }
 
 

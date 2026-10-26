@@ -25,11 +25,11 @@ public class MailService {
     private final TemplateEngine templateEngine;
 
     @KafkaListener(
-            topics = "verify-customer-account-events",
+            topics = "otp-customer-account-events",
             groupId = "notification-service-group"
     )
     public void verifyCustomerAccountEvent(OtpNotificationEvent event) {
-        log.info("Nhận sự kiện xác thực email cho: {}", event.toEmail());
+        log.info("Nhận sự kiện gửi mã OTP email cho: {}", event.toEmail());
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -110,7 +110,7 @@ public class MailService {
         }
 
         if (hours > 0) {
-            return minutes == 0
+            return minutes > 0
                     ? "%d giờ %d phút".formatted(hours, minutes)
                     : "%d giờ".formatted(hours);
         }

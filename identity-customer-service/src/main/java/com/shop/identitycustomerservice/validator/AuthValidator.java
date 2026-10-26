@@ -1,6 +1,7 @@
 package com.shop.identitycustomerservice.validator;
 
 import com.shop.identitycustomerservice.common.enums.StatusAccount;
+import com.shop.identitycustomerservice.dto.request.ChangePasswordRequest;
 import com.shop.identitycustomerservice.dto.request.LoginAccountRequest;
 import com.shop.identitycustomerservice.dto.request.RegisterAccountRequest;
 import com.shop.identitycustomerservice.entity.CustomerAccount;
@@ -54,6 +55,12 @@ public class AuthValidator {
     }
 
     public void validationPassword(CustomerAccount account, LoginAccountRequest request){
+        if(!checkPassword(request.password(), account.getPasswordHash())){
+            throw new AccessDeniedException("Mật khẩu không khớp", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    public void changePasswordValidator(ChangePasswordRequest request, CustomerAccount account){
         if(!checkPassword(request.password(), account.getPasswordHash())){
             throw new AccessDeniedException("Mật khẩu không khớp", HttpStatus.UNAUTHORIZED);
         }
