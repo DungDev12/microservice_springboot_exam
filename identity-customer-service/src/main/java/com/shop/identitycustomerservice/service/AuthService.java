@@ -67,6 +67,7 @@ public class AuthService implements IAuthService {
                         .setLastName(request.info().lastName())
                         .setDateBirth(request.info().dateBirth().toString())
                         .setPhoneNumber(request.info().phoneNumber())
+                        .setGender(request.info().gender().toString())
                 .build());
 
         if(!customerProfile.getSuccess()){

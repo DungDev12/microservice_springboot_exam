@@ -32,6 +32,11 @@ dependencies {
     compileOnly 'jakarta.annotation:jakarta.annotation-api:3.0.0'
     runtimeOnly 'io.grpc:grpc-services:1.85.1'
 
+    // Mapstruct
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'

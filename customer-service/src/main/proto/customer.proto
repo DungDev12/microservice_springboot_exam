@@ -13,6 +13,7 @@ message CreateProfileRequest {
   string lastName = 3;
   string dateBirth = 4; // Định dạng YYYY-MM-DD
   string phoneNumber = 5;
+  string gender = 6;
 }
 
 message CreateProfileResponse {

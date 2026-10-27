@@ -1,5 +1,6 @@
 package com.shop.identitycustomerservice.dto.request;
 
+import com.shop.identitycustomerservice.common.enums.Gender;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
@@ -40,7 +41,9 @@ public record RegisterAccountRequest(
             @NotNull(message = "Ngày sinh không được để trống")
             LocalDate dateBirth,
 
-            String phoneNumber
+            String phoneNumber,
+
+            Gender gender
     ){
         @AssertTrue(message = "Bạn phải từ 16 tuổi trở lên")
         public boolean isOldEnough() {
