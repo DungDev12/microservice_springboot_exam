@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,48 +42,48 @@ public class JwtProvider {
     }
 
 
-    private String generateToken(String email, UUID accountUuid, Date dateExpiration) {
+    private String generateToken(String email, UUID accountUuid, Instant dateExpiration) {
         return Jwts.builder()
                 .id(accountUuid.toString())
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(dateExpiration)
+                .expiration(Date.from(dateExpiration))
                 .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
 
-    private String generateToken(String email, UUID accountUuid, Date dateExpiration, Claims claims) {
+    private String generateToken(String email, UUID accountUuid, Instant dateExpiration, Claims claims) {
         return Jwts.builder()
                 .id(accountUuid.toString())
                 .subject(email)
                 .issuedAt(new Date())
                 .claims(claims)
-                .expiration(dateExpiration)
+                .expiration(Date.from(dateExpiration))
                 .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
 
     public String generateToken(String email, UUID accountUuid) {
-        Date dateExpiration = new Date(new Date().getTime() + 18000000);
-        return generateToken(email,accountUuid,dateExpiration);
+        Instant now = Instant.now();
+        return generateToken(email,accountUuid,now.plus(5, ChronoUnit.MINUTES));
     }
 
     public String generateAccessToken(String email, UUID accountUuid) {
-        Date dateExpiration = new Date(new Date().getTime() + accessExpirationMs);
-        return generateToken(email,accountUuid,dateExpiration);
+        Instant now = Instant.now();
+        return generateToken(email,accountUuid,now.plus(accessExpirationMs, ChronoUnit.MILLIS));
     }
 
     public String generateRefreshToken(String email, UUID accountUuid) {
-        Date dateExpiration = new Date(new Date().getTime() + refreshExpirationMs);
-        return generateToken(email,accountUuid,dateExpiration);
+        Instant now = Instant.now();
+        return generateToken(email,accountUuid,now.plus(refreshExpirationMs, ChronoUnit.MILLIS));
     }
 
     public String generatePasswordResetToken(String email, UUID accountUuid) {
-        Date dateExpiration = new Date(new Date().getTime() + 18000000);
+        Instant now = Instant.now();
         Claims claims = Jwts.claims()
                 .add("permission","PASSWORD_RESET")
                 .build();
-        return generateToken(email,accountUuid,dateExpiration,claims);
+        return generateToken(email,accountUuid,now.plus(5, ChronoUnit.MINUTES),claims);
     }
 
 
