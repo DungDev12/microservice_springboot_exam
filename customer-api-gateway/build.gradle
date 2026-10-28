@@ -23,6 +23,8 @@ ext {
 }
 
 dependencies {
+    // Vault
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
