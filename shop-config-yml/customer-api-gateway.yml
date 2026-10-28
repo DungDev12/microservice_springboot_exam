@@ -3,6 +3,8 @@ spring:
     gateway:
       server:
         webflux:
+          default-filters:
+            - JwtAuthentication
           routes:
             - id: customer-service
               uri: lb://CUSTOMER-SERVICE
