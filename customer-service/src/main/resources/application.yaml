@@ -9,7 +9,6 @@ spring:
     username: ${DB_USERNAME:tuandung}
     password: ${DB_PASSWORD:TuanDung@1207}
 
-
   grpc:
     server:
       port: 9099
