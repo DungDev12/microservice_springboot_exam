@@ -5,12 +5,9 @@ import com.shop.productservice.dto.request.product.UpdateProductRequest;
 import com.shop.productservice.dto.response.product.ProductEmployeeResponse;
 import com.shop.productservice.dto.response.product.ProductResponse;
 import com.shop.productservice.entity.Product;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProductMapper {
 
     Product toEntity(CreateProductRequest request);

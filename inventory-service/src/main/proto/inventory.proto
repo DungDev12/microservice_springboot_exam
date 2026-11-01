@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.shop.grpc.shared"; // Package chung cho mã sinh ra
+option java_outer_classname = "SimpleProto";
+
+service InventoryGrpcService {
+  rpc CreateInventory (CreateInventoryRequest) returns (CreateInventoryResponse);
+}
+
+message CreateInventoryRequest {
+  int64 productId = 1;
+  int32 quantity = 2;
+}
+
+message CreateInventoryResponse {
+  bool success = 1;
+  string message = 2;
+}
