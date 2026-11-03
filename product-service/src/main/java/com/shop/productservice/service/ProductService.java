@@ -1,7 +1,8 @@
 package com.shop.productservice.service;
 
 import com.shop.grpc.shared.CreateInventoryRequest;
-import com.shop.grpc.shared.CreateInventoryResponse;
+import com.shop.grpc.shared.InventoryGrpcResponse;
+import com.shop.grpc.shared.UpdateInventoryRequest;
 import com.shop.productservice.client.grpc.InventoryGrpcClient;
 import com.shop.productservice.dto.request.product.CreateProductRequest;
 import com.shop.productservice.dto.request.product.UpdateProductRequest;
@@ -35,7 +36,7 @@ public class ProductService implements IProductService {
         Product product = productMapper.toEntity(request);
         product.setCreateBy(UUID.fromString(employeeUuid));
         Product savedProduct = productRepository.save(product);
-         CreateInventoryResponse response = inventoryGrpcClient.createInventory(CreateInventoryRequest.newBuilder()
+        InventoryGrpcResponse response = inventoryGrpcClient.createInventory(CreateInventoryRequest.newBuilder()
                         .setProductId(savedProduct.getId())
                         .setQuantity(request.quantity())
                 .build());
@@ -43,8 +44,19 @@ public class ProductService implements IProductService {
          if(!response.getSuccess()){
              throw new InternalServerErrorException("Tạo sản phẩm thất bại");
          }
-        return productMapper.toEmployeeResponse(savedProduct);
+        return new ProductEmployeeResponse(
+                savedProduct.getId(),
+                savedProduct.getName(),
+                savedProduct.getDescription(),
+                savedProduct.isPromotion(),
+                savedProduct.getPrice(),
+                savedProduct.getDiscount(),
+                savedProduct.getCreateBy().toString(),
+                request.quantity()
+        );
     }
+
+
 
     @Override
     public Product findProductById(Long id) {
@@ -59,10 +71,35 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductEmployeeResponse updateProduct(Long id, String employeeUuid, UpdateProductRequest request) {
         Product product = this.findProductById(id);
         productMapper.updateProduct(request, product);
         return productMapper.toEmployeeResponse(productRepository.save(product));
+    }
+
+    @Override
+    public ProductEmployeeResponse updateQuantityProduct(Long id, String employeeUuid, Integer quantity) {
+        Product product = this.findProductById(id);
+        InventoryGrpcResponse response = inventoryGrpcClient.updateInventory(
+                UpdateInventoryRequest.newBuilder()
+                        .setProductId(product.getId())
+                        .setQuantity(quantity)
+                        .build()
+        );
+        if(!response.getSuccess()){
+            throw new InternalServerErrorException("Cập nhật sản phẩm thất bại");
+        }
+         return new ProductEmployeeResponse(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.isPromotion(),
+                product.getPrice(),
+                product.getDiscount(),
+                product.getCreateBy().toString(),
+                quantity
+        );
     }
 
     @Override

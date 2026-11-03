@@ -18,7 +18,7 @@ public class InventoryGrpcConfig {
         var instances = discoveryClient.getInstances("inventory-service");
 
         if (instances.isEmpty()) {
-            throw new IllegalStateException("Không tìm thấy instance nào của customer-service trên Eureka!");
+            throw new IllegalStateException("Không tìm thấy instance nào của inventory-service trên Eureka!");
         }
 
         // Lấy thông tin mạng của instance đầu tiên (Hoặc bạn có thể tùy biến giải thuật round-robin tại đây)

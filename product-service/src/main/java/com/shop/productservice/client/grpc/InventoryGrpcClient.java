@@ -1,8 +1,6 @@
 package com.shop.productservice.client.grpc;
 
-import com.shop.grpc.shared.CreateInventoryRequest;
-import com.shop.grpc.shared.CreateInventoryResponse;
-import com.shop.grpc.shared.InventoryGrpcServiceGrpc;
+import com.shop.grpc.shared.*;
 import io.grpc.StatusRuntimeException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,7 @@ public class InventoryGrpcClient extends InventoryGrpcServiceGrpc.InventoryGrpcS
 
     private final InventoryGrpcServiceGrpc.InventoryGrpcServiceBlockingStub inventoryBlockingStub;
 
-    public CreateInventoryResponse createInventory(CreateInventoryRequest request){
+    public InventoryGrpcResponse createInventory(CreateInventoryRequest request){
         try {
             return inventoryBlockingStub
                     .withDeadlineAfter(60, TimeUnit.SECONDS) // set thời gian chết
@@ -28,4 +26,5 @@ public class InventoryGrpcClient extends InventoryGrpcServiceGrpc.InventoryGrpcS
             throw ex;
         }
     }
+
 }

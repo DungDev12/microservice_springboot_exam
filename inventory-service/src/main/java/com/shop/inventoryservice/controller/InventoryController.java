@@ -59,4 +59,15 @@ public class InventoryController {
                         HttpStatus.OK
                 ));
     }
+
+    @DeleteMapping("transactions")
+    public ResponseEntity<ApiResponse<?>> deleteInventoryTransactions(
+            @RequestParam("ids") List<Long> ids
+    ){
+        inventoryTransactionService.deleteInventoryTransactions(ids);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(
+                        "Xoá lịch sử kho hàng thành công"
+                ));
+    }
 }

@@ -28,8 +28,8 @@ public class InventoryTransactionService implements IInventoryTransactionService
                 .quantityChange(quantity)
                 .beforeChange(0)
                 .afterChange(quantity)
-                .type(TransactionType.IMPORT_PURCHASE)
-                .referenceType(TransactionType.IMPORT_PURCHASE.toString())
+                .type(TransactionType.AWAITING_STOCK_ARRIVAL) // Chờ nhập hàng
+                .referenceType("CHỜ NHẬP HÀNG")
                 .note("Sản phẩm mới được tạo và nhập kho")
                 .build();
         inventoryTransactionRepository.save(inventoryTransaction);
@@ -37,38 +37,19 @@ public class InventoryTransactionService implements IInventoryTransactionService
 
     @Override
     public void insertInventoryTransaction(
-            Inventory inventory,
-            int oldQuantity,
-            String type,
-            String reference,
-            String referenceType,
-            String note) {
-        InventoryTransaction inventoryTransaction = InventoryTransaction.builder()
-                .inventoryId(inventory)
-                .quantityChange(inventory.getQuantity())
-                .beforeChange(oldQuantity)
-                .afterChange(oldQuantity + inventory.getQuantity())
-                .type(TransactionType.valueOf(type))
-                .referenceType(referenceType)
-                .reference(reference)
-                .note(note)
-                .build();
+         InventoryTransaction inventoryTransaction) {
         inventoryTransactionRepository.save(inventoryTransaction);
     }
 
+
     @Override
-    public void updateInventoryTransaction(Inventory inventory, int oldQuantity, String type, String reference, String referenceType, String note) {
-        InventoryTransaction inventoryTransaction = InventoryTransaction.builder()
-                .inventoryId(inventory)
-                .quantityChange(inventory.getQuantity())
-                .beforeChange(oldQuantity)
-                .afterChange(inventory.getQuantity())
-                .type(TransactionType.valueOf(type))
-                .referenceType("UPDATE")
-                .reference(reference)
-                .note(note)
-                .build();
-        inventoryTransactionRepository.save(inventoryTransaction);
+    public void deleteInventoryTransactions(List<Long> listId) {
+        listId.forEach(this::deleteById);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        inventoryTransactionRepository.deleteById(id);
     }
 
     @Override

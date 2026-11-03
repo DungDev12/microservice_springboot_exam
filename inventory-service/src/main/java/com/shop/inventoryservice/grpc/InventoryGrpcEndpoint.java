@@ -2,7 +2,7 @@ package com.shop.inventoryservice.grpc;
 
 
 import com.shop.grpc.shared.CreateInventoryRequest;
-import com.shop.grpc.shared.CreateInventoryResponse;
+import com.shop.grpc.shared.InventoryGrpcResponse;
 import com.shop.grpc.shared.InventoryGrpcServiceGrpc;
 import com.shop.inventoryservice.service.InventoryService;
 import io.grpc.Status;
@@ -15,15 +15,13 @@ import org.springframework.grpc.server.service.GrpcService;
 public class InventoryGrpcEndpoint extends InventoryGrpcServiceGrpc.InventoryGrpcServiceImplBase {
 
     private final InventoryService inventoryService;
-//    private final CustomerGrpcValidation customerGrpcValidation;
-//
 
     @Override
     public void createInventory(CreateInventoryRequest request,
-                                StreamObserver<CreateInventoryResponse> responseObserver) {
+                                StreamObserver<InventoryGrpcResponse> responseObserver) {
         try{
 
-            CreateInventoryResponse response = inventoryService.createInventory(request);
+            InventoryGrpcResponse response = inventoryService.createInventory(request);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception ex){
@@ -33,34 +31,5 @@ public class InventoryGrpcEndpoint extends InventoryGrpcServiceGrpc.InventoryGrp
         }
 
     }
-
-
-//    @Override
-//    public void createProfile(
-//            CreateProfileRequest request,
-//            StreamObserver<CreateProfileResponse> responseObserver
-//    ) {
-//        try {
-//            customerGrpcValidation.validateRequest(request);
-//
-//            customerService.createProfile(request);
-//
-//            CreateProfileResponse response =
-//                    CreateProfileResponse.newBuilder()
-//                            .setSuccess(true)
-//                            .setMessage("Tạo hồ sơ khách hàng thành công")
-//                            .build();
-//
-//            responseObserver.onNext(response);
-//            responseObserver.onCompleted();
-//
-//        } catch (Exception ex) {
-//            responseObserver.onError(
-//                    Status.ALREADY_EXISTS
-//                            .withDescription("Không thể tạo hồ sơ khách")
-//                            .asRuntimeException()
-//            );
-//        }
-//    }
 
 }

@@ -1,5 +1,6 @@
 package com.shop.inventoryservice.service.interfaces;
 
+import com.shop.inventoryservice.common.enums.TransactionType;
 import com.shop.inventoryservice.dto.response.InventoryTransactionsResponse;
 import com.shop.inventoryservice.entity.Inventory;
 import com.shop.inventoryservice.entity.InventoryTransaction;
@@ -11,21 +12,11 @@ public interface IInventoryTransactionService {
     void createInventoryTransaction(Inventory inventory,int quantity);
 
     void insertInventoryTransaction(
-            Inventory inventory,
-            int oldQuantity,
-            String type,
-            String reference,
-            String referenceType,
-            String note);
+          InventoryTransaction inventoryTransaction);
 
-    void updateInventoryTransaction(
-            Inventory inventory,
-            int oldQuantity,
-            String type,
-            String reference,
-            String referenceType,
-            String note
-    );
+    void deleteInventoryTransactions(List<Long> listId);
+
+    void deleteById(Long id);
 
     List<InventoryTransactionsResponse> getAllByInventoryId(Long inventoryId);
 }

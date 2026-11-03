@@ -29,6 +29,7 @@ public class ApiResponse<T> {
         return ApiResponse.<T>builder()
                 .success(true)
                 .message(message)
+                .status(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())
                 .build();
     }

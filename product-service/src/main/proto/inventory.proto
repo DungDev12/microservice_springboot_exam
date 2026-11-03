@@ -5,7 +5,7 @@ option java_package = "com.shop.grpc.shared"; // Package chung cho mã sinh ra
 option java_outer_classname = "SimpleProto";
 
 service InventoryGrpcService {
-  rpc CreateInventory (CreateInventoryRequest) returns (CreateInventoryResponse);
+  rpc CreateInventory (CreateInventoryRequest) returns (InventoryGrpcResponse);
 }
 
 message CreateInventoryRequest {
@@ -13,7 +13,7 @@ message CreateInventoryRequest {
   int32 quantity = 2;
 }
 
-message CreateInventoryResponse {
+message InventoryGrpcResponse {
   bool success = 1;
   string message = 2;
 }
