@@ -2,7 +2,6 @@ package com.shop.productservice.service;
 
 import com.shop.grpc.shared.CreateInventoryRequest;
 import com.shop.grpc.shared.InventoryGrpcResponse;
-import com.shop.grpc.shared.UpdateInventoryRequest;
 import com.shop.productservice.client.grpc.InventoryGrpcClient;
 import com.shop.productservice.dto.request.product.CreateProductRequest;
 import com.shop.productservice.dto.request.product.UpdateProductRequest;
@@ -79,32 +78,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductEmployeeResponse updateQuantityProduct(Long id, String employeeUuid, Integer quantity) {
-        Product product = this.findProductById(id);
-        InventoryGrpcResponse response = inventoryGrpcClient.updateInventory(
-                UpdateInventoryRequest.newBuilder()
-                        .setProductId(product.getId())
-                        .setQuantity(quantity)
-                        .build()
-        );
-        if(!response.getSuccess()){
-            throw new InternalServerErrorException("Cập nhật sản phẩm thất bại");
-        }
-         return new ProductEmployeeResponse(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.isPromotion(),
-                product.getPrice(),
-                product.getDiscount(),
-                product.getCreateBy().toString(),
-                quantity
-        );
-    }
-
-    @Override
     public void deleteProductById(Long id) {
-        this.findProductById(id);
-        productRepository.deleteById(id);
+        Product product = this.findProductById(id);
+        product.setDeleted(true);
+        productRepository.save(product);
     }
 }

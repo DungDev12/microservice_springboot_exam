@@ -11,6 +11,10 @@ public interface InventoryMapper {
 
     InventoryResponse toResponse(Inventory inventory);
 
+    @BeanMapping(
+            nullValuePropertyMappingStrategy =
+                    NullValuePropertyMappingStrategy.IGNORE
+    )
     void updateInventory(
             UpdateInventoryRequest request,
             @MappingTarget Inventory inventory);

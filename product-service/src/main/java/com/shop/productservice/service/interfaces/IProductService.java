@@ -16,7 +16,5 @@ public interface IProductService {
 
     ProductEmployeeResponse updateProduct(Long id, String employeeUuid, UpdateProductRequest request);
 
-    ProductEmployeeResponse updateQuantityProduct(Long id, String employeeUuid, Integer quantity);
-
     void deleteProductById(Long id);
 }

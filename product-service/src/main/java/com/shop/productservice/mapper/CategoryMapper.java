@@ -17,10 +17,7 @@ public interface CategoryMapper {
     CategoryResponse toResponse(Category category);
     CategoryEmployeeResponse toEmployeeResponse(Category category);
 
-    @BeanMapping(
-            nullValuePropertyMappingStrategy =
-                    NullValuePropertyMappingStrategy.IGNORE
-    )
+
     void updateCategory(
             UpdateCategoryRequest request,
             @MappingTarget Category category

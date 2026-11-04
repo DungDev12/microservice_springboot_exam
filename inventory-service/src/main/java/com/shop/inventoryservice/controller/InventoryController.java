@@ -5,9 +5,7 @@ import com.shop.inventoryservice.dto.request.UpdateInventoryRequest;
 import com.shop.inventoryservice.dto.response.InventoryResponse;
 import com.shop.inventoryservice.service.InventoryService;
 import com.shop.inventoryservice.service.InventoryTransactionService;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -69,5 +67,15 @@ public class InventoryController {
                 .body(ApiResponse.success(
                         "Xoá lịch sử kho hàng thành công"
                 ));
+    }
+
+    @DeleteMapping("{inventoryId}")
+    public ResponseEntity<ApiResponse<?>> deleteInventoryTransactionById(
+            @PathVariable Long inventoryId,
+            @RequestHeader("X-Auth-Userid") String uuid
+    ){
+        inventoryService.deleteInventory(inventoryId, uuid);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(ApiResponse.success("Xoá dữ liệu thành công"));
     }
 }

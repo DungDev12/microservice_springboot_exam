@@ -62,7 +62,7 @@ public class InventoryService implements IInventoryService {
     @Transactional
     public InventoryResponse updateInventory(Long id, UpdateInventoryRequest request) {
         // Tìm kho hàng
-        Inventory inventory = inventoryRepository.findByProductId(id)
+        Inventory inventory = inventoryRepository.findByIdAndProductId(id,request.productId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy sản phẩm trong kho"));
 
         // Lấy số lượng cũ
@@ -72,16 +72,19 @@ public class InventoryService implements IInventoryService {
         // Tạo lịch sử
         InventoryTransaction inventoryTransaction;
         switch (request.type()){
-            case ADJUSTMENT_PLUS,ADJUSTMENT_MINUS -> inventoryTransaction = InventoryTransaction.builder()
-                    .inventoryId(inventory)
-                    .type(request.type())
-                    .referenceType(request.referenceType())
-                    .reference(generateAutoReference(request.referenceType()))
-                    .beforeChange(oldQuantity)
-                    .afterChange(oldQuantity + inventory.getQuantity())
-                    .quantityChange(inventory.getQuantity())
-                    .note(request.note())
-                    .build();
+            case ADJUSTMENT_PLUS,ADJUSTMENT_MINUS -> {
+                inventoryTransaction = InventoryTransaction.builder()
+                        .inventoryId(inventory)
+                        .type(request.type())
+                        .referenceType(request.referenceType())
+                        .reference(generateAutoReference(request.referenceType()))
+                        .beforeChange(oldQuantity)
+                        .afterChange(oldQuantity + inventory.getQuantity())
+                        .quantityChange(inventory.getQuantity())
+                        .note(request.note())
+                        .build();
+                inventory.setQuantity(inventory.getQuantity() + oldQuantity);
+            }
             default -> inventoryTransaction = InventoryTransaction.builder()
                     .inventoryId(inventory)
                     .type(request.type())
