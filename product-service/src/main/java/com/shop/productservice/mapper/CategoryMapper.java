@@ -10,17 +10,14 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createBy", ignore = true)
-    @Mapping(target = "products", ignore = true)
     Category toEntity(CreateCategoryRequest request);
+
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "description", ignore = true)
     CategoryResponse toResponse(Category category);
     CategoryEmployeeResponse toEmployeeResponse(Category category);
 
-    @BeanMapping(
-            nullValuePropertyMappingStrategy =
-                    NullValuePropertyMappingStrategy.IGNORE
-    )
+
     void updateCategory(
             UpdateCategoryRequest request,
             @MappingTarget Category category

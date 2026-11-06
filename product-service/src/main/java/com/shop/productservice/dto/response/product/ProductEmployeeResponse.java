@@ -9,6 +9,7 @@ public record ProductEmployeeResponse(
         boolean promotion,
         BigDecimal price,
         int discount,
-        String createBy
+        String createBy,
+        Integer quantity
 ) {
 }
