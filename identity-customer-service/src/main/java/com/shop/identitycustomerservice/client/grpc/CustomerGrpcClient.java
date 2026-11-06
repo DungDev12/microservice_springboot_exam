@@ -6,10 +6,7 @@ import com.shop.grpc.shared.CustomerGrpcServiceGrpc;
 import io.grpc.StatusRuntimeException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.grpc.client.GrpcChannelFactory;
 
 import java.util.concurrent.TimeUnit;
 

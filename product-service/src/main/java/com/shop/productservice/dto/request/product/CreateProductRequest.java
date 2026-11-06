@@ -1,12 +1,20 @@
 package com.shop.productservice.dto.request.product;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
+
 
 public record CreateProductRequest(
         String name,
         String description,
-        boolean promotion,
+        Boolean promotion,
         BigDecimal price,
-        int discount
+        Integer discount,
+        Integer quantity
 ) {
+
 }

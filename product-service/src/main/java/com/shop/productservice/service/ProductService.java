@@ -1,5 +1,8 @@
 package com.shop.productservice.service;
 
+import com.shop.grpc.shared.CreateInventoryRequest;
+import com.shop.grpc.shared.InventoryGrpcResponse;
+import com.shop.productservice.client.grpc.InventoryGrpcClient;
 import com.shop.productservice.dto.request.product.CreateProductRequest;
 import com.shop.productservice.dto.request.product.UpdateProductRequest;
 import com.shop.productservice.dto.response.product.ProductEmployeeResponse;
@@ -9,6 +12,8 @@ import com.shop.productservice.exception.NotFoundException;
 import com.shop.productservice.mapper.ProductMapper;
 import com.shop.productservice.repository.ProductRepository;
 import com.shop.productservice.service.interfaces.IProductService;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.InternalServerErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +27,35 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final InventoryGrpcClient  inventoryGrpcClient;
 
     @Override
+    @Transactional
     public ProductEmployeeResponse createProduct(String employeeUuid ,CreateProductRequest request) {
         Product product = productMapper.toEntity(request);
         product.setCreateBy(UUID.fromString(employeeUuid));
-        return productMapper.toEmployeeResponse(productRepository.save(product));
+        Product savedProduct = productRepository.save(product);
+        InventoryGrpcResponse response = inventoryGrpcClient.createInventory(CreateInventoryRequest.newBuilder()
+                        .setProductId(savedProduct.getId())
+                        .setQuantity(request.quantity())
+                .build());
+
+         if(!response.getSuccess()){
+             throw new InternalServerErrorException("Tạo sản phẩm thất bại");
+         }
+        return new ProductEmployeeResponse(
+                savedProduct.getId(),
+                savedProduct.getName(),
+                savedProduct.getDescription(),
+                savedProduct.isPromotion(),
+                savedProduct.getPrice(),
+                savedProduct.getDiscount(),
+                savedProduct.getCreateBy().toString(),
+                request.quantity()
+        );
     }
+
+
 
     @Override
     public Product findProductById(Long id) {
@@ -43,6 +70,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductEmployeeResponse updateProduct(Long id, String employeeUuid, UpdateProductRequest request) {
         Product product = this.findProductById(id);
         productMapper.updateProduct(request, product);
@@ -51,7 +79,8 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProductById(Long id) {
-        this.findProductById(id);
-        productRepository.deleteById(id);
+        Product product = this.findProductById(id);
+        product.setDeleted(true);
+        productRepository.save(product);
     }
 }

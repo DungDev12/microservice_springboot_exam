@@ -1,23 +1,37 @@
 package com.shop.inventoryservice.entity;
 
 import com.shop.inventoryservice.common.entity.BaseLongEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@Builder
+@Table(name = "inventories")
 public class Inventory extends BaseLongEntity {
 
+    @Column(unique = true)
     private Long productId;
 
-    private int quantity = 0;
-    private int reservedQuantity;
+    @Builder.Default
+    private Integer quantity = 0; // Số lượng
+
+    @Builder.Default
+    private int reservedQuantity = 0;
+
+    @OneToMany(mappedBy = "inventoryId")
+    private List<InventoryTransaction> inventoryTransactions;
 
     public int getAvailableQuantity(){
-        return quantity - reservedQuantity;
+        int total = (quantity != null) ? quantity : 0;
+        return total - reservedQuantity;
     }
 }
