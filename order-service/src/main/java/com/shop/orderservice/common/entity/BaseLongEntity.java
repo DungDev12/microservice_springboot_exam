@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BaseLongEntity {
+public abstract class BaseLongEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

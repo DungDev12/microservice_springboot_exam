@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BaseUUIDEntity {
+public abstract class BaseUUIDEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,4 +1,12 @@
 package com.shop.orderservice.dto.response;
 
-public record OrderResponse() {
+import java.math.BigDecimal;
+
+public record OrderResponse(
+        Long id,
+        String recipientName,
+        String recipientPhoneNumber,
+        String recipientAddress,
+        String code,
+        BigDecimal totalPrice) {
 }

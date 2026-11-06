@@ -5,5 +5,5 @@ import com.shop.orderservice.dto.response.OrderResponse;
 
 public interface IOrderService {
 
-    OrderResponse createOrder(CreateOrderRequest request);
+    OrderResponse createOrder(String uuid, CreateOrderRequest request);
 }

@@ -2,10 +2,7 @@ package com.shop.orderservice.entity;
 
 import com.shop.orderservice.common.entity.BaseLongEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -15,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "order_items")
+@SuperBuilder
 public class OrderItem extends BaseLongEntity {
 
     private Long productId; // ID sản phẩm
