@@ -1,6 +1,6 @@
 package com.shop.productservice.config.grpc;
 
-import com.shop.grpc.shared.InventoryGrpcServiceGrpc;
+import com.shop.grpc.inventory.InventoryGrpcServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.cloud.client.discovery.DiscoveryClient;

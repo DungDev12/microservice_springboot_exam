@@ -1,15 +1,18 @@
 package com.shop.inventoryservice.service;
 
-import com.shop.grpc.shared.CreateInventoryRequest;
+import com.shop.grpc.inventory.*;
 
-import com.shop.grpc.shared.InventoryGrpcResponse;
+import com.shop.inventoryservice.common.enums.TransactionType;
 import com.shop.inventoryservice.dto.request.UpdateInventoryRequest;
 import com.shop.inventoryservice.dto.response.InventoryResponse;
 import com.shop.inventoryservice.entity.Inventory;
+import com.shop.inventoryservice.entity.InventoryReservation;
 import com.shop.inventoryservice.entity.InventoryTransaction;
 import com.shop.inventoryservice.exception.NotFoundException;
 import com.shop.inventoryservice.mapper.InventoryMapper;
 import com.shop.inventoryservice.repository.InventoryRepository;
+import com.shop.inventoryservice.repository.InventoryReservationRepository;
+import com.shop.inventoryservice.repository.InventoryTransactionRepository;
 import com.shop.inventoryservice.service.interfaces.IInventoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,9 @@ public class InventoryService implements IInventoryService {
     private final InventoryRepository inventoryRepository;
     private final InventoryMapper  inventoryMapper;
     private final InventoryTransactionService inventoryTransactionService;
+    private final InventoryReservationService inventoryReservationService;
+    private final InventoryReservationRepository inventoryReservationRepository;
+    private final InventoryTransactionRepository inventoryTransactionRepository;
 
     private String generateAutoReference(String prefix) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -35,8 +42,8 @@ public class InventoryService implements IInventoryService {
         return prefix + "-" + timestamp + "-" + randomNum;
     }
 
-    @Override
     @Transactional
+    @Override
     public InventoryGrpcResponse createInventory(CreateInventoryRequest request) {
         if(this.exitsByProductId(request.getProductId())){
 //            throw new AlreadyExistsException("Sản phẩm đã tồn tại");
@@ -113,6 +120,171 @@ public class InventoryService implements IInventoryService {
         inventory.setDeleted(true);
         inventory.setDeleteBy(UUID.fromString(deletedBy));
         inventoryRepository.save(inventory);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public ExportInventoryGrpcResponse exportInventory(ExportInventoryRequest request) {
+        List<Long> productIds = request.getListProductsList()
+                .stream()
+                .map(ListProducts::getProductId)
+                .distinct()
+                .toList();
+
+        Map<Long, Integer> requestedQuantities = request.getListProductsList().stream()
+                .collect(Collectors.groupingBy(
+                        ListProducts::getProductId,
+                        Collectors.summingInt(ListProducts::getQuantity)
+                ));
+
+
+        List<Inventory> inventoryProducts = inventoryRepository.findAllByProductIdIn(productIds);
+
+        if (inventoryProducts.size() != productIds.size()) {
+            return ExportInventoryGrpcResponse.newBuilder()
+                    .setSuccess(false)
+                    .setMessage("Có sản phẩm trong danh sách không tồn tại trong hệ thống kho.")
+                    .build();
+        }
+
+        List<InventoryTransaction> inventoryTransactions = new ArrayList<>();
+        for (Inventory inventory : inventoryProducts) {
+            int requestedQty = requestedQuantities.get(inventory.getProductId());
+            int beforeQuantity = inventory.getQuantity();
+            int afterQuantity = beforeQuantity - requestedQty;
+
+            int beforeReserved = inventory.getReservedQuantity();
+            int afterReserved = beforeReserved - requestedQty;
+
+            inventory.setQuantity(afterQuantity);
+            inventory.setReservedQuantity(afterReserved);
+            inventoryTransactions.add(
+                    InventoryTransaction.builder()
+                            .inventoryId(inventory)
+                            .type(TransactionType.EXPORT_SALE)
+                            .referenceType("XUẤT HÀNG")
+                            .reference(generateAutoReference(request.getOrderCode()))
+                            .beforeChange(beforeQuantity)
+                            .afterChange(afterQuantity)
+                            .quantityChange(-requestedQty)
+                            .note(String.format("Xuất hàng cho đơn hàng %s", request.getOrderCode()))
+                            .build()
+            );
+        }
+        inventoryRepository.saveAll(inventoryProducts);
+        // Lưu lịch sử
+        inventoryTransactionRepository.saveAll(inventoryTransactions);
+        inventoryReservationService.updateAllStatusExportedByOrderCode(request.getOrderCode());
+        // Gọi bên giao hàng để nhận hàng
+
+        return ExportInventoryGrpcResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Xuất kho thành công.")
+                .build();
+    }
+
+
+    // Khách hàng huỷ đơn
+    @Override
+    @Transactional
+    public RestoreInventoryGrpcResponse restoreInventory(RestoreInventoryRequest request) {
+
+        List<InventoryReservation> inventoryReservations = inventoryReservationService.findAllInventoryReservationsByOrderCode(request.getOrderCode());
+        if (inventoryReservations.isEmpty()) {
+            return RestoreInventoryGrpcResponse.newBuilder()
+                    .setSuccess(false)
+                    .setMessage("Không tìm thấy reservation của đơn hàng.")
+                    .build();
+        }
+        List<Long> productIds = inventoryReservations.stream()
+                .map(InventoryReservation::getProductId)
+                .distinct()
+                .toList();
+
+        List<Inventory> inventories =
+                inventoryRepository.findAllByProductIdIn(productIds);
+
+        Map<Long, Inventory> inventoryMap =
+                inventories.stream()
+                        .collect(Collectors.toMap(
+                                Inventory::getProductId,
+                                Function.identity()
+                        ));
+
+        for (InventoryReservation  inventoryReservation : inventoryReservations) {
+            Inventory inventory =
+                    inventoryMap.get(inventoryReservation.getProductId());
+
+            inventory.setReservedQuantity(
+                    inventory.getReservedQuantity()
+                            - inventoryReservation.getQuantity()
+            );
+        }
+
+        inventoryRepository.saveAll(inventories);
+        inventoryReservationRepository.deleteAll(inventoryReservations);
+
+        return RestoreInventoryGrpcResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Huỷ đơn hàng thành công")
+                .build();
+    }
+
+
+    // Xử lý tạm để giữ hàng cho khách
+    @Override
+    @Transactional
+    public ReservationInventoryGrpcResponse reservationInventory(ReservationInventoryRequest request) {
+        List<Long> productIds = request.getListProductsList()
+                .stream()
+                .map(ListProducts::getProductId)
+                .distinct()
+                .toList();
+        List<Inventory> inventoryProducts = inventoryRepository.findAllByProductIdIn(productIds);
+
+        if (inventoryProducts.size() != productIds.size()) {
+            return ReservationInventoryGrpcResponse.newBuilder()
+                    .setSuccess(false)
+                    .setMessage("Có sản phẩm trong danh sách không tồn tại trong hệ thống kho.")
+                    .build();
+        }
+
+
+        Map<Long, Integer> requestedQuantities = request.getListProductsList().stream()
+                .collect(Collectors.groupingBy(
+                        ListProducts::getProductId,
+                        Collectors.summingInt(ListProducts::getQuantity)
+                ));
+
+        for (Inventory inventory : inventoryProducts) {
+            int currentAvailable = inventory.getAvailableQuantity();
+            int requestedQty = requestedQuantities.getOrDefault(inventory.getProductId(), 0);
+
+            // Nếu số lượng khả dụng trừ đi số lượng mua mà bé hơn 0 -> Báo lỗi lập tức
+            if (currentAvailable - requestedQty < 0) {
+                System.out.println("Sản phẩm không đủ");
+                // Ném lỗi gRPC chuẩn để báo về cho Order-Service biết chính xác lý do
+                return ReservationInventoryGrpcResponse.newBuilder()
+                        .setSuccess(false)
+                        .setMessage(String.format("Sản phẩm ID %d không đủ số lượng tồn kho khả dụng (Hiện có: %d, Cần: %d)",inventory.getProductId(), currentAvailable, requestedQty))
+                        .build();
+            }
+        }
+        List<InventoryReservation> inventoryReservations = new ArrayList<>();
+        for (Inventory inventory : inventoryProducts) {
+            inventory.setReservedQuantity(inventory.getReservedQuantity() + requestedQuantities.get(inventory.getProductId()));
+            inventoryReservations.add(InventoryReservation.builder()
+                            .orderCode(request.getOrderCode())
+                            .quantity(requestedQuantities.get(inventory.getProductId()))
+                            .productId(inventory.getProductId())
+                    .build());
+        }
+        inventoryRepository.saveAll(inventoryProducts);
+        inventoryReservationService.insertInventoryReservations(inventoryReservations);
+        return ReservationInventoryGrpcResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Đã lưu hàng giữ để khách hàng thanh toán")
+                .build();
     }
 
 

@@ -11,7 +11,7 @@ spring:
 
   grpc:
     server:
-      port: 9099
+      port: 9097
       host: 0.0.0.0 # Cho phép ngoài mạng
 
   jpa:
@@ -29,4 +29,4 @@ eureka:
   instance:
     prefer-ip-address: true
     metadata-map:
-      grpc-port: "9099"
+      grpc-port: "9097"

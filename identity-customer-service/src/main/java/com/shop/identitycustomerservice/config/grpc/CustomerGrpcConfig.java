@@ -26,7 +26,7 @@ public class CustomerGrpcConfig {
         String host = instance.getHost();
 
         // LẤY PORT gRPC: Đọc từ metadata hoặc fall-back về port mặc định của gRPC Server bên kia (Ví dụ: 9090)
-        int port = Integer.parseInt(instance.getMetadata().getOrDefault("gRPC.port", "9099"));
+        int port = Integer.parseInt(instance.getMetadata().getOrDefault("gRPC.port", "9097"));
 
         // Khởi tạo kênh ManagedChannel thuần của gRPC
         ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)

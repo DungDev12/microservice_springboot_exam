@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -20,14 +21,15 @@ import java.util.UUID;
 @Table(name = "categories")
 public class Category extends BaseLongEntity {
 
-    @NotNull
-    @Column(unique = true)
+    @NotBlank(message = "Thể loại không được để trống")
+    @Column(unique = false)
     private String name;
     private String description;
 
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 
-    @NotNull
+    @NotNull(message = "Tài khoảng tạo không được null")
+    @Column(nullable = false)
     private UUID createBy;
 }

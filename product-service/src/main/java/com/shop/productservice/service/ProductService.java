@@ -1,7 +1,11 @@
 package com.shop.productservice.service;
 
-import com.shop.grpc.shared.CreateInventoryRequest;
-import com.shop.grpc.shared.InventoryGrpcResponse;
+import com.shop.grpc.inventory.CreateInventoryRequest;
+import com.shop.grpc.inventory.InventoryGrpcResponse;
+import com.shop.grpc.product.OrderItems;
+import com.shop.grpc.product.ProductGrpc;
+import com.shop.grpc.product.ProductGrpcRequest;
+import com.shop.grpc.product.ProductGrpcResponse;
 import com.shop.productservice.client.grpc.InventoryGrpcClient;
 import com.shop.productservice.dto.request.product.CreateProductRequest;
 import com.shop.productservice.dto.request.product.UpdateProductRequest;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -51,7 +56,8 @@ public class ProductService implements IProductService {
                 savedProduct.getPrice(),
                 savedProduct.getDiscount(),
                 savedProduct.getCreateBy().toString(),
-                request.quantity()
+                request.quantity(),
+                savedProduct.getVat()
         );
     }
 
@@ -82,5 +88,30 @@ public class ProductService implements IProductService {
         Product product = this.findProductById(id);
         product.setDeleted(true);
         productRepository.save(product);
+    }
+
+    @Override
+    public ProductGrpcResponse getProductsForOrder(ProductGrpcRequest request) {
+
+        List<Long> productIds = request.getOrderItemsList()
+                .stream()
+                .map(OrderItems::getProductId)
+                .distinct()
+                .toList();
+
+        List<Product> products = productRepository.findAllById(productIds);
+
+        return ProductGrpcResponse.newBuilder()
+                .addAllProducts(
+                        products.stream()
+                                .map(product -> ProductGrpc.newBuilder()
+                                        .setId(product.getId())
+                                        .setName(product.getName())
+                                        .setPrice(product.getPrice().toString())
+                                        .setDiscount(product.getDiscount())
+                                        .setVat(product.getVat())
+                                        .build())
+                                .toList()
+                ).build();
     }
 }

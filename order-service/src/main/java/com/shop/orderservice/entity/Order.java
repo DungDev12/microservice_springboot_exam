@@ -1,14 +1,14 @@
 package com.shop.orderservice.entity;
 
 import com.shop.orderservice.common.entity.BaseLongEntity;
+import com.shop.orderservice.common.enums.OrderPaymentStatus;
 import com.shop.orderservice.common.enums.OrderStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.shop.orderservice.common.enums.PaymentStatus;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,11 +28,22 @@ public class Order extends BaseLongEntity {
 
     private String code; // Mã đơn hàng ( tạo ngẫu nhiên )
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems; // Các sản phẩm trong đơn hàng
+    @OneToMany(mappedBy = "order",  cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>(); // Các sản phẩm trong đơn hàng
 
     @Builder.Default
     private BigDecimal totalPrice = BigDecimal.valueOf(0); // Tổng giá trị đơn hàng
-    private OrderStatus status; // Trạng thái đơn hàng ( WAIT_PAYMENT | PAYMENT | RETURN ....)
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.PENDING_PAYMENT; // Trạng thái đơn hàng ( WAIT_PAYMENT | PAYMENT | RETURN ....)
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.UNPAID; // Trạng thái thanh toán
+
+    @Enumerated(EnumType.STRING)
+    private OrderPaymentStatus paymentMethod; // Chuyển khoản hoặc thanh toán khi nhận hàng
+
 
 }

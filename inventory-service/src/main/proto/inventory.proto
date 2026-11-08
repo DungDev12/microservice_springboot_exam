@@ -1,11 +1,14 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "com.shop.grpc.shared"; // Package chung cho mã sinh ra
-option java_outer_classname = "SimpleProto";
+option java_package = "com.shop.grpc.inventory"; // Package chung cho mã sinh ra
+option java_outer_classname = "InventoryProto";
 
 service InventoryGrpcService {
   rpc CreateInventory (CreateInventoryRequest) returns (InventoryGrpcResponse);
+  rpc ExportProduct (ExportInventoryRequest) returns (ExportInventoryGrpcResponse);
+  rpc RestoreProduct (RestoreInventoryRequest) returns (RestoreInventoryGrpcResponse);
+  rpc ReservationProduct (ReservationInventoryRequest) returns(ReservationInventoryGrpcResponse);
 }
 
 message CreateInventoryRequest {
@@ -17,3 +20,41 @@ message InventoryGrpcResponse {
   bool success = 1;
   string message = 2;
 }
+
+message ListProducts {
+  int64 productId = 1;
+  int32 quantity = 2;
+}
+
+/// --- Export
+
+message ExportInventoryRequest {
+  string orderCode = 1;
+  repeated ListProducts listProducts = 2;
+}
+
+
+message ExportInventoryGrpcResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// -- Restore
+message RestoreInventoryRequest {
+  string orderCode = 1;
+}
+message RestoreInventoryGrpcResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// -- Reservation
+message ReservationInventoryRequest {
+  string orderCode = 1;
+  repeated ListProducts listProducts = 2;
+}
+message ReservationInventoryGrpcResponse {
+  bool success = 1;
+  string message = 2;
+}
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hóa đơn mua hàng điện tử - Shop Online</title>
+</head>
+<body style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f6f8fa; margin: 0; padding: 30px 10px; -webkit-font-smoothing: antialiased;">
+<div style="max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 10px solid #2c3e50;">
+
+    <!-- Logo & Header -->
+    <div style="text-align: center; margin-bottom: 25px;">
+        <h2 style="color: #2c3e50; margin: 0 0 5px 0; font-size: 24px; letter-spacing: 0.5px;">XÁC NHẬN ĐƠN HÀNG THÀNH CÔNG</h2>
+        <p style="color: #7f8c8d; margin: 0; font-size: 14px;">Cảm ơn quý khách đã mua sắm thiết bị tại hệ thống của chúng tôi</p>
+    </div>
+
+    <!-- Thông tin đơn hàng & Khách hàng -->
+    <div style="background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 20px; border-radius: 6px; margin-bottom: 30px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #495057;">
+            <tr>
+                <td style="padding: 6px 0; font-weight: 600; width: 35%; color: #343a40;">Mã đơn hàng:</td>
+                <td style="padding: 6px 0; color: #1e3d59; font-weight: 700; font-size: 15px;" th:text="${orderCode}">ORDmbHRDb1T</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px 0; font-weight: 600; color: #343a40;">Thời gian thanh toán:</td>
+                <td style="padding: 6px 0;" th:text="${paymentTime}">2026-11-07 17:13:55</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px 0; font-weight: 600; color: #343a40;">Phương thức thanh toán:</td>
+                <td style="padding: 6px 0; color: #27ae60; font-weight: 600;" th:text="${paymentMethod}">Chuyển khoản VietQR</td>
+            </tr>
+            <tr th:if="${bankReference != null}">
+                <td style="padding: 6px 0; font-weight: 600; color: #343a40;">Mã tham chiếu Bank:</td>
+                <td style="padding: 6px 0; font-family: 'Courier New', Courier, monospace; font-weight: 600; color: #6c757d;" th:text="${bankReference}">240V501263110202</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Bảng Danh sách thiết bị công nghệ -->
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 16px; font-weight: 600; border-left: 4px solid #2c3e50; padding-left: 10px;">
+            DANH SÁCH THIẾT BỊ ĐÃ MUA
+        </h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+            <tr style="border-bottom: 2px solid #dee2e6; color: #495057; font-size: 13px; text-transform: uppercase; background-color: #f1f3f5;">
+                <th style="padding: 12px 10px; font-weight: 600;">Tên Sản Phẩm / Thiết Bị</th>
+                <th style="padding: 12px 10px; font-weight: 600; text-align: right; width: 22%;">Đơn Giá</th>
+                <th style="padding: 12px 10px; font-weight: 600; text-align: center; width: 12%;">SL</th>
+                <th style="padding: 12px 10px; font-weight: 600; text-align: center; width: 12%;">Giảm giá</th>
+                <th style="padding: 12px 10px; font-weight: 600; text-align: center; width: 12%;">VAT</th>
+                <th style="padding: 12px 10px; font-weight: 600; text-align: right; width: 22%;">Thành Tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Dùng vòng lặp th:each xử lý thiết bị công điện tử -->
+            <tr th:each="item : ${items}"
+                style="border-bottom: 1px solid #dee2e6; font-size: 14px; color: #495057;">
+
+                <!-- Tên sản phẩm -->
+                <td style="padding: 15px 10px; font-weight: 500; color: #212529;"
+                    th:text="${item.name}">
+                    Laptop Gaming Dell Alienware
+                </td>
+
+                <!-- Đơn giá bán gốc -->
+                <td style="padding: 15px 10px; text-align: right; color: #6c757d;"
+                    th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                    25.000.000 đ
+                </td>
+
+                <!-- Số lượng -->
+                <td style="padding: 15px 10px; text-align: center; font-weight: 600;"
+                    th:text="${item.quantity}">
+                    1
+                </td>
+
+                <!-- Discount -->
+                <td style="padding: 15px 10px; text-align: right; font-weight: 700; color: #212529;">
+                    <span th:text="${item.discount}">10</span>%
+                </td>
+
+                <!-- VAT -->
+                <td style="padding: 15px 10px; text-align: right; font-weight: 700; color: #212529;">
+                    <span th:text="${item.vat}">8</span>%
+                </td>
+
+                <!-- Thành tiền -->
+                <td style="padding: 15px 10px; text-align: right; font-weight: 700; color: #212529;"
+                    th:text="${#numbers.formatDecimal(item.amount, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                    25.000.000 đ
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Khu vực tính tổng tiền hàng -->
+    <div style="border-top: 2px dashed #dee2e6; padding-top: 15px;">
+        <table style="margin-left: auto; width: 50%; border-collapse: collapse; font-size: 14px;">
+            <tr style="font-size: 16px; ">
+                <td style="padding: 12px 0; font-weight: 700; color: #2c3e50; text-align: left;">Tổng thanh toán:</td>
+                <td style="padding: 12px 0; font-weight: bold; color: #dc3545; text-align: right; font-size: 18px;"
+                    th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">27.000.000 đ</td>
+            </tr>
+        </table>
+        <div style="clear: both;"></div>
+    </div>
+
+    <!-- Chú thích bảo hành điện tử -->
+    <div style="margin-top: 20px; background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; font-size: 13px; text-align: left;">
+        <strong style="color: #e42a2a" >Lưu ý về Bảo hành:</strong> Thiết bị điện tử của quý khách đã được kích hoạt hệ thống <strong>Bảo hành điện tử</strong> tự động kể từ thời điểm nhận được email xác nhận thanh toán này.
+    </div>
+
+    <!-- Chân trang -->
+    <div style="margin-top: 35px; padding-top: 20px; border-top: 1px solid #eaedf0; font-size: 12px; color: #adb5bd; text-align: center; line-height: 1.6;">
+        <p style="margin: 0 0 4px 0;">Đây là thư thông báo tự động xuất hóa đơn từ Shop Công Nghệ Online.</p>
+        <p style="margin: 0;">Nếu cần hỗ trợ kỹ thuật hoặc giao nhận hàng, vui lòng gọi <strong>1900 xxxx</strong> hoặc phản hồi tại hệ thống.</p>
+    </div>
+
+</div>
+</body>
+</html>

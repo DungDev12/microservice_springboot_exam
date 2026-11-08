@@ -1,5 +1,7 @@
 package com.shop.orderservice.utils;
 
+import com.shop.orderservice.config.sepay.SePayConfig;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -8,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class OrderCodeGenerator {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
@@ -16,10 +19,9 @@ public class OrderCodeGenerator {
 
     private final SecureRandom random = new SecureRandom();
 
-    public String generate(){
-        String date = LocalDate.now()
-            .format(DateTimeFormatter.BASIC_ISO_DATE);
+    private final SePayConfig sePayConfig;
 
+    public String generate(){
         StringBuilder code = new StringBuilder(CODE_LENGTH);
 
         for (int i = 0; i < CODE_LENGTH; i++) {
@@ -27,6 +29,6 @@ public class OrderCodeGenerator {
             code.append(CHARACTERS.charAt(index));
         }
 
-        return String.format("ORD-%s-%s",date, code.toString());
+        return String.format("%s%s", sePayConfig.getSyntaxPrefix(), code.toString());
     }
 }

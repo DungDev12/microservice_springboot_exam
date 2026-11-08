@@ -12,4 +12,6 @@ public interface CustomerAccountRepository extends JpaRepository<CustomerAccount
     Optional<CustomerAccount> findByEmail(String email);
 
     Optional<CustomerAccount> findByUuid(UUID uuid);
+
+    CustomerAccountRepository getCustomerAccountByUuid(UUID uuid);
 }
