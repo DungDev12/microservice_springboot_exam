@@ -144,6 +144,11 @@ public class AuthService implements IAuthService {
             throw new AccessDeniedException("Mã OTP không khớp", HttpStatus.UNAUTHORIZED);
         }
 
+        CustomerAccount account = customerAccountRepository.findByEmail(jwtParse.get("email"))
+                .orElseThrow(() -> new AccessDeniedException("Email không tồn tại", HttpStatus.UNAUTHORIZED));
+        account.setStatus(StatusAccount.ACTIVE);
+        customerAccountRepository.save(account);
+
         // Xác thực thành cồn thì gửi mail thông báo chào mừng người mới
         notificationEventProducer.send(
                 new NotificationEvent(
