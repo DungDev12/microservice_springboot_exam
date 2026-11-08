@@ -45,7 +45,8 @@ spring:
         spring.json.use.type.headers: true
         spring.json.type.mapping: >-
           otp:com.shop.notificationservice.dto.events.OtpNotificationEvent,
-          welcome:com.shop.notificationservice.dto.events.NotificationEvent
+          welcome:com.shop.notificationservice.dto.events.NotificationEvent,
+          transferSuccess:com.shop.notificationservice.dto.events.TransferNotificationEvent
 
 
 server:

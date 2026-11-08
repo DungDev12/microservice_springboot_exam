@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.shop.grpc.product"; // Package chung cho mã sinh ra
+option java_outer_classname = "ProductProto";
+
+service ProductGrpcService {
+  rpc getProductById (ProductGrpcRequest) returns (ProductGrpcResponse);
+}
+
+message ProductGrpcRequest{
+  repeated OrderItems orderItems = 1;
+}
+
+message OrderItems {
+  int64 productId = 1;
+  int32 quantity = 2;
+}
+
+message ProductGrpcResponse{
+  repeated ProductGrpc products = 1;
+}
+message ProductGrpc {
+  int64 id = 1;
+  string name = 2;
+  string price =3;
+  int32 discount =4;
+  int32 vat =5;
+}

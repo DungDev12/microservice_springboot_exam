@@ -10,6 +10,7 @@ public record ProductEmployeeResponse(
         BigDecimal price,
         int discount,
         String createBy,
-        Integer quantity
+        Integer quantity,
+        Integer vat
 ) {
 }

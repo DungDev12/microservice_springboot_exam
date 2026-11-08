@@ -1,6 +1,8 @@
 package com.shop.productservice.client.grpc;
 
-import com.shop.grpc.shared.*;
+import com.shop.grpc.inventory.CreateInventoryRequest;
+import com.shop.grpc.inventory.InventoryGrpcResponse;
+import com.shop.grpc.inventory.InventoryGrpcServiceGrpc;
 import io.grpc.StatusRuntimeException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

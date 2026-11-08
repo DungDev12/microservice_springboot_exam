@@ -14,7 +14,8 @@ public record CreateProductRequest(
         Boolean promotion,
         BigDecimal price,
         Integer discount,
-        Integer quantity
+        Integer quantity,
+        Integer vat
 ) {
 
 }

@@ -25,6 +25,9 @@ public class Product extends BaseLongEntity {
     private BigDecimal price; // Giá bán hiện tại
     private int discount; // Giảm giá
 
+    @Builder.Default
+    private int vat = 0; // Giá có VAT (%)
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category; // Thể loại cho phân loại sản phẩm

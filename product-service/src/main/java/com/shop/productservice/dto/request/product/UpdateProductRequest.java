@@ -7,6 +7,7 @@ public record UpdateProductRequest(
         String description,
         Boolean  promotion ,
         BigDecimal price,
-        Integer discount
+        Integer discount,
+        Integer vat
 ) {
 }
