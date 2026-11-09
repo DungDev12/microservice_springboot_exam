@@ -3,5 +3,9 @@ package com.shop.customerservice.repostitory;
 import com.shop.customerservice.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CustomerRepository extends JpaRepository<Customer, String> {
+import java.util.Optional;
+import java.util.UUID;
+
+public interface CustomerRepository extends JpaRepository<Customer, UUID> {
+    Optional<Customer> findByUuid(UUID uuid);
 }
