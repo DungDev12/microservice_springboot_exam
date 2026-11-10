@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: identity-employee-service
+  config:
+    import: "optional:configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/test}
+    username: ${DB_USERNAME:tuandung}
+    password: ${DB_PASSWORD:TuanDung@1207}
+
+  cloud:
+    vault:
+      uri: ${VAULT_URI:http://192.168.20.3:8200}
+      token: ${VAULT_TOKEN}
+      authentication: ${VAULT_CONFIG_AUTHENTICATION:TOKEN}
+      kv:
+        enabled: true
+        backend: ${VAULT_KV_BACKEND:shop}
+        default-context: ${VAULT_KV_DEFAULT:employee}
+        profile-separator: '/'
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:http://192.168.20.3:9092}
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      properties:
+#        spring.json.type.mapping: >-
+#          otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
+#          welcome:com.shop.identitycustomerservice.event.NotificationEvent
+
+server:
+  port: ${SERVER_PORT:3002}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
