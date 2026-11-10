@@ -1,11 +1,13 @@
 package com.shop.identityemployeeservice.entity;
 
 import com.shop.identityemployeeservice.common.entity.BaseLongEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -24,6 +26,16 @@ public class Role extends BaseLongEntity {
     @Builder.Default
     private boolean active = true;
 
-    @NotBlank(message = "Người tạo không được để trống")
+    @NotNull(message = "Người tạo không được để trống")
+    @Column(name = "created_by", nullable = false)
     private UUID createdBy;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "role_permissions",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    @Builder.Default
+    private Set<Permission> permissions = new HashSet<>();
 }

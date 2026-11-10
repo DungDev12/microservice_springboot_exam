@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.shop.grpc.employee"; // Package chung cho mã sinh ra
+option java_outer_classname = "EmployeeProto";
+
+service EmployeeGrpcService {
+  rpc createEmployee (EmployeeGrpcRequest) returns (EmployeeGrpcResponse);
+}
+
+message EmployeeGrpcRequest{
+  string uuid = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string phoneNumber = 4;
+  string address = 5;
+  string dateOfBirth = 6;
+}
+
+
+message EmployeeGrpcResponse{
+  bool success = 1;
+  string message = 2;
+}

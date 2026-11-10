@@ -10,7 +10,7 @@ spring:
     password: ${DB_PASSWORD:TuanDung@1207}
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:3003}
 
 eureka:
   client:

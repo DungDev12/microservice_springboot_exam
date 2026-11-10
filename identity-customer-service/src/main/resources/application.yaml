@@ -6,6 +6,7 @@ spring:
       - "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
       - "vault://"
       - optional:file:.env[.properties]
+
   grpc:
     client:
       channels:

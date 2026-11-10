@@ -1,4 +1,4 @@
-package com.shop.identityemployeeservice.dto.request;
+package com.shop.identityemployeeservice.dto.request.role;
 
 public record RoleRequest(
         String name,
