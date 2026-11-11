@@ -8,6 +8,10 @@ spring:
               uri: lb://EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/employees/**
+            - id: identity-employee-service
+              uri: lb://IDENTITY-EMPLOYEE-SERVICE
+              predicates:
+                - Path=/api/auth/**
 eureka:
   instance:
     prefer-ip-address: true
