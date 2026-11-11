@@ -8,10 +8,14 @@ spring:
               uri: lb://EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/employees/**
+              filters:
+                - JwtAuthentication
             - id: identity-employee-service
               uri: lb://IDENTITY-EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/auth/**
+              filters:
+                - JwtAuthentication
 eureka:
   instance:
     prefer-ip-address: true
