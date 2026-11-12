@@ -13,7 +13,7 @@ spring:
             - id: identity-employee-service
               uri: lb://IDENTITY-EMPLOYEE-SERVICE
               predicates:
-                - Path=/api/auth/**,/api/roles/**,/api/permissions/**
+                - Path=/api/auth/**,/api/roles/**,/api/permissions/**,/api/accounts/**
               filters:
                 - JwtAuthentication
 eureka:
