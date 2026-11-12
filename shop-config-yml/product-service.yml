@@ -2,9 +2,10 @@ spring:
   grpc:
     client:
       channels:
-        customer-grpc-service:
+        inventory-grpc-service:
           address: "discovery:///INVENTORY-SERVICE"
           negotiation-type: plaintext
+
     server:
       port: 9098
       host: 0.0.0.0
@@ -30,5 +31,5 @@ server:
 
 eureka:
   client:
-     service-url:
-       defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}

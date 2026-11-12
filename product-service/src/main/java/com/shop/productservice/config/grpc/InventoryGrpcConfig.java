@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.grpc.client.ImportGrpcClients;
 
-@ImportGrpcClients(target = "customer-grpc-service", types =  InventoryGrpcServiceGrpc.InventoryGrpcServiceBlockingStub.class)
+@ImportGrpcClients(target = "inventory-grpc-service", types =  InventoryGrpcServiceGrpc.InventoryGrpcServiceBlockingStub.class)
 @Configuration
 public class InventoryGrpcConfig {
 
