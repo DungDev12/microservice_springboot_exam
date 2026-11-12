@@ -34,7 +34,7 @@ spring:
       kv:
         enabled: true
         backend: ${VAULT_KV_BACKEND:shop}
-        default-context: ${VAULT_KV_DEFAULT:employee}
+        default-context: ${VAULT_KV_DEFAULT:customer}
         profile-separator: '/'
 
   kafka:

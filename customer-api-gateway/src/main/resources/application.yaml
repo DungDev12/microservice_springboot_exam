@@ -7,27 +7,9 @@ spring:
       - "vault://"
       - "optional:file:.env[.properties]"
 
-  cloud:
-    vault:
-      uri: ${VAULT_URI:http://192.168.20.3:8200}
-      token: ${VAULT_TOKEN}
-      authentication: ${VAULT_CONFIG_AUTHENTICATION:TOKEN}
-      kv:
-        enabled: true
-        backend: ${VAULT_KV_BACKEND:shop}
-        default-context: ${VAULT_KV_DEFAULT:customer}
-        profile-separator: '/'
 
-server:
-  port: ${SERVER_PORT:8080}
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA:http://localhost:8761/eureka}
 
-otp:
-  # Tạo ở link https://mariushosting.com/opensslrandhex32.html
-  secret: ${otp.hmac.secret}
-  ttl-seconds: 300
-  max-attempts: 5
+
+
+
