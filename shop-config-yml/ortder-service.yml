@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/test}
+    username: ${DB_USERNAME:tuandung}
+    password: ${DB_PASSWORD:TuanDung@1207}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: ${SERVER_PORT:8083}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
+
+sepay:
+  token-api: ${SEPAY_TOKEN_API}
+  webhook-token: ${SEPAY_WEBHOOH_TOKEN}
+  bank-code: ${SEPAY_BANKCODE}
+  account-number: ${SEPAY_ACCOUNT_NUMBER}
+  syntax-prefix: ${SEPAY_SYNTAX_PREFIX}
