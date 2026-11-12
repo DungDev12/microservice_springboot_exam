@@ -1,51 +1,8 @@
 spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+  application:
+    name: identity-customer-service
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
-  grpc:
-    client:
-      channels:
-        customer-grpc-service:
-          address: "discovery:///CUSTOMER-SERVICE"
-          negotiation-type: plaintext
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:TuanDung@1207}
-      connect-timeout: 2s
-
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVER}
-
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        spring.json.type.mapping: >-
-          otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
-          welcome:com.shop.identitycustomerservice.event.NotificationEvent
-
-server:
-  port: ${SERVER_PORT:8081}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
-  instance:
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
-
-otp:
-  # Tạo ở link https://mariushosting.com/opensslrandhex32.html
-  secret: ${otp.hmac.secret}
-  ttl-seconds: 300
-  max-attempts: 5
