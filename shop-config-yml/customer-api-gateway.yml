@@ -20,21 +20,10 @@ spring:
               uri: lb://ORDER-SERVICE
               predicates:
                 - Path=/api/orders/**,/api/payment/**
-
-server:
-  port: ${SERVER_PORT:8080}
-
 eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA}
   instance:
     prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
+#    lease-renewal-interval-in-seconds: 5
+#    lease-expiration-duration-in-seconds: 10
 
-otp:
-  # Tạo ở link https://mariushosting.com/opensslrandhex32.html
-  secret: ${otp.hmac.secret}
-  ttl-seconds: 300
-  max-attempts: 5
+
