@@ -5,15 +5,6 @@ spring:
     import:
         - "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
         - "optional:file:.env[.properties]"
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/test}
-    username: ${DB_USERNAME:tuandung}
-    password: ${DB_PASSWORD:TuanDung@1207}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
   kafka:
     bootstrap-servers: ${KAFKA_SERVER:http://192.168.20.3:9092}
 
@@ -25,17 +16,4 @@ spring:
           transferSuccess:com.shop.orderservice.event.TransferNotificationEvent
 
 
-server:
-  port: 8083
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
-
-sepay:
-  token-api: ${SEPAY_TOKEN_API}
-  webhook-token: ${SEPAY_WEBHOOH_TOKEN}
-  bank-code: ${SEPAY_BANKCODE}
-  account-number: ${SEPAY_ACCOUNT_NUMBER}
-  syntax-prefix: ${SEPAY_SYNTAX_PREFIX}

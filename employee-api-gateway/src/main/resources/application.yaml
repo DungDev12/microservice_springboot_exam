@@ -17,12 +17,3 @@ spring:
         backend: ${VAULT_KV_BACKEND:shop}
         default-context: ${VAULT_KV_DEFAULT:employee}
         profile-separator: '/'
-
-server:
-  port: ${SERVER_PORT:3000}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka}
-
