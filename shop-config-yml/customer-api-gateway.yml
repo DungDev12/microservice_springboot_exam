@@ -20,15 +20,6 @@ spring:
               uri: lb://ORDER-SERVICE
               predicates:
                 - Path=/api/orders/**,/api/payment/**
-  vault:
-    uri: ${VAULT_URI:http://192.168.20.3:8200}
-    token: ${VAULT_TOKEN}
-    authentication: ${VAULT_CONFIG_AUTHENTICATION:TOKEN}
-    kv:
-      enabled: true
-      backend: ${VAULT_KV_BACKEND:shop}
-      default-context: ${VAULT_KV_DEFAULT:customer}
-      profile-separator: "/"
 
 server:
   port: ${SERVER_PORT:8080}
@@ -36,7 +27,7 @@ server:
 eureka:
   client:
     service-url:
-    defaultZone: ${DEFAULT_ZONE_EUREKA}
+      defaultZone: ${DEFAULT_ZONE_EUREKA}
   instance:
     prefer-ip-address: true
     lease-renewal-interval-in-seconds: 5
