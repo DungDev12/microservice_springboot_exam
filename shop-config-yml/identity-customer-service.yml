@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: identity-customer-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
