@@ -11,12 +11,12 @@ spring:
               predicates:
                 - Path=/api/employees/**
 
-            - id: identity-employee-service
-              uri: lb://IDENTITY-EMPLOYEE-SERVICE
+            - id: identity-customer-service
+              uri: lb://IDENTITY-CUSTOMER-SERVICE
               predicates:
                 - Path=/api/auth/**,/api/roles/**,/api/permissions/**,/api/accounts/**,/internal/authorization/**
 
-            - id: identity-employee-service
+            - id: product-service
               uri: lb://PRODUCT-SERVICE
               predicates:
                 - Path=/api/products/**,/api/categories/**
