@@ -7,12 +7,12 @@ spring:
       - "vault://"
       - optional:file:.env[.properties]
 
-  grpc:
-    client:
-      channels:
-        customer-grpc-service:
-          address: "discovery:///CUSTOMER-SERVICE"
-          negotiation-type: plaintext
+#  grpc:
+#    client:
+#      channels:
+#        customer-grpc-service:
+#          address: "discovery:///CUSTOMER-SERVICE"
+#          negotiation-type: plaintext
 
 
   cloud:
@@ -26,28 +26,14 @@ spring:
         default-context: ${VAULT_KV_DEFAULT:customer}
         profile-separator: '/'
 
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVER:http://192.168.20.3:9092}
-
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        spring.json.type.mapping: >-
-          otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
-          welcome:com.shop.identitycustomerservice.event.NotificationEvent
+#  kafka:
+#    bootstrap-servers: ${KAFKA_SERVER:http://192.168.20.3:9092}
+#
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      properties:
+#        spring.json.type.mapping: >-
+#          otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
+#          welcome:com.shop.identitycustomerservice.event.NotificationEvent
          
-
-server:
-  port: ${SERVER_PORT:8081}
-
-eureka:
-  client:
-      service-url:
-        defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
-
-otp:
-  # Tạo ở link https://mariushosting.com/opensslrandhex32.html
-  secret: ${otp.hmac.secret}
-  ttl-seconds: 300
-  max-attempts: 5

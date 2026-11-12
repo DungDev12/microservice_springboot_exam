@@ -19,7 +19,7 @@ spring:
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:TuanDung@1207}
       connect-timeout: 2s
-  
+
   kafka:
     bootstrap-servers: ${KAFKA_SERVER}
 
@@ -30,3 +30,17 @@ spring:
         spring.json.type.mapping: >-
           otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
           welcome:com.shop.identitycustomerservice.event.NotificationEvent
+
+server:
+  port: ${SERVER_PORT:8081}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
+
+otp:
+  # Tạo ở link https://mariushosting.com/opensslrandhex32.html
+  secret: ${otp.hmac.secret}
+  ttl-seconds: 300
+  max-attempts: 5
