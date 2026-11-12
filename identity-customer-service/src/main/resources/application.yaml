@@ -14,17 +14,6 @@ spring:
           address: "discovery:///CUSTOMER-SERVICE"
           negotiation-type: plaintext
 
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/test}
-    username: ${DB_USERNAME:tuandung}
-    password: ${DB_PASSWORD:TuanDung@1207}
-
-  data:
-    redis:
-      host: ${REDIS_HOST:192.168.20.3}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:TuanDung@1207}
-      connect-timeout: 2s
 
   cloud:
     vault:
