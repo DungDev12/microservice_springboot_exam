@@ -1,5 +1,34 @@
 spring:
+  grpc:
+    client:
+      channels:
+        customer-grpc-service:
+          address: "discovery:///INVENTORY-SERVICE"
+          negotiation-type: plaintext
+    server:
+      port: 9098
+      host: 0.0.0.0
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/test}
+    username: ${DB_USERNAME:tuandung}
+    password: ${DB_PASSWORD:TuanDung@1207}
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
-    show-sql: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.20.3}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:TuanDung@1207}
+      connect-timeout: 2s
+
+server:
+  port: ${SERVER_PORT:3004}
+
+eureka:
+  client:
+     service-url:
+       defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
