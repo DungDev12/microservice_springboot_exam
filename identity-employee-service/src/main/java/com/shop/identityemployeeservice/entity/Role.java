@@ -30,6 +30,9 @@ public class Role extends BaseLongEntity {
     @Column(name = "created_by", nullable = false)
     private UUID createdBy;
 
+    @Builder.Default
+    private long version = 1L;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "role_permissions",

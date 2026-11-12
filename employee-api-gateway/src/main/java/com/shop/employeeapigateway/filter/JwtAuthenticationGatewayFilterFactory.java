@@ -3,6 +3,7 @@ package com.shop.employeeapigateway.filter;
 import com.shop.employeeapigateway.security.JwtUtils;
 import com.shop.employeeapigateway.security.RouterValidator;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Component
 public class JwtAuthenticationGatewayFilterFactory  extends AbstractGatewayFilterFactory<
         JwtAuthenticationGatewayFilterFactory.Config> {
@@ -43,7 +48,6 @@ public class JwtAuthenticationGatewayFilterFactory  extends AbstractGatewayFilte
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            System.out.println("Apply Test");
             var request = exchange.getRequest();
 
             if (routerValidator.predicate.test(request)) {
@@ -67,10 +71,19 @@ public class JwtAuthenticationGatewayFilterFactory  extends AbstractGatewayFilte
                 }
 
                 Claims claims = jwtUtils.getClaimsFromToken(token);
+                log.info(String.format("[FILTER]-[%s]",claims.getId()));
+                List<?> roles = claims.get("roles", List.class);
+
+                String rolesHeader = roles == null
+                        ? ""
+                        : roles.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","));
+
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                        .header("X-Auth-Userid",claims.getId())
+                        .header("X-Auth-UserUuid",claims.getId())
                         .header("X-Auth-User",claims.getSubject())
-                        .header("X-Auth-Roles",claims.get("roles",String.class))
+                        .header("X-Auth-Roles",rolesHeader)
                         .build();
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
             }

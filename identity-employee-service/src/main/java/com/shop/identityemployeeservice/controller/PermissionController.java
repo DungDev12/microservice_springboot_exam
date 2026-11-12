@@ -30,7 +30,7 @@ public class PermissionController {
     @PreAuthorize("hasAuthority('CREATE_PERMISSION')")
     @PostMapping()
     public ResponseEntity<ApiResponse<PermissionResponse>> addRole(
-            @RequestHeader("X-Auth-Userid") String userId,
+            @RequestHeader("X-Auth-UserUuid") String userId,
             @RequestBody PermissionRequest request){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(permissionService.create(userId, request),
@@ -41,7 +41,7 @@ public class PermissionController {
     @PreAuthorize("hasAuthority('UPDATE_PERMISSION')")
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<PermissionResponse>> updateRole(
-            @RequestHeader("X-Auth-Userid") String userId,
+            @RequestHeader("X-Auth-UserUuid") String userId,
             @PathVariable Long id,
             @RequestBody PermissionRequest request
     ){

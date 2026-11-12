@@ -23,6 +23,9 @@ public class PermissionService implements IPermissionService {
 
     @Override
     public PermissionResponse create(String uuid, PermissionRequest request) {
+        if(this.existsByName(request.name())){
+            throw new AlreadyExistsException("Tên quyền đã tồn tại");
+        }
         Permission permission = permissionMapper.toEntity(request);
         permission.setCreatedBy(UUID.fromString(uuid));
         return permissionMapper.toResponse(permissionRepository.save(permission));
@@ -31,8 +34,10 @@ public class PermissionService implements IPermissionService {
     @Override
     public PermissionResponse update(String uuid, Long aLong, PermissionRequest request) {
         Permission permission = this.getById(aLong);
-        if(this.existsByName(request.name())) {
-            throw new AlreadyExistsException("Tên vai trò đã tồn tại");
+        if(!permission.getName().equals(request.name())){
+            if(this.existsByName(request.name())) {
+                throw new AlreadyExistsException("Tên vai trò đã tồn tại");
+            }
         }
         permissionMapper.update(request, permission);
         permission.setCreatedBy(UUID.fromString(uuid));
@@ -54,6 +59,11 @@ public class PermissionService implements IPermissionService {
         return permissionRepository.findById(aLong).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy quyền")
         );
+    }
+
+    @Override
+    public List<Permission> getPermissionByIds(List<Long> permissionIds) {
+        return permissionRepository.findAllById(permissionIds);
     }
 
     @Override

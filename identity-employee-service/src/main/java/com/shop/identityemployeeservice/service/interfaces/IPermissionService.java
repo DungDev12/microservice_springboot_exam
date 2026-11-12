@@ -13,5 +13,7 @@ public interface IPermissionService extends ICrudService<PermissionRequest, Perm
 
     Permission getById(Long aLong);
 
+    List<Permission> getPermissionByIds(List<Long> permissionIds);
     List<PermissionResponse> getAllPermissions();
+
 }

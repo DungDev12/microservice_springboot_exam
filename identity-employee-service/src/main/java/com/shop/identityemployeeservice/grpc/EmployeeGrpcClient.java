@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Getter
 @RequiredArgsConstructor
-public class CustomerGrpcClient {
+public class EmployeeGrpcClient {
 
     private final EmployeeGrpcServiceGrpc.EmployeeGrpcServiceBlockingStub employeeGrpcServiceBlockingStub;
 

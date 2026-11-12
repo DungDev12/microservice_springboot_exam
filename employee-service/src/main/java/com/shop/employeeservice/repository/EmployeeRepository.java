@@ -8,6 +8,9 @@ import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
-    @Query("SELECT MAX(CAST(SUBSTRING(e.employeeCode, 3) AS long)) FROM Employee e")
+    @Query("""
+        SELECT MAX(CAST(SUBSTRING(e.employeeCode, 3) AS Long))
+        FROM Employee e
+    """)
     Long findMaxEmployeeNumber();
 }

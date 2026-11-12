@@ -104,6 +104,12 @@ public class DataInitializer implements ApplicationRunner {
                 .build());
 
         permissions.add(Permission.builder()
+                .name("ADD_ROLE")
+                .description("Thêm vai trò vào tài khoản")
+                .createdBy(SYSTEM_USER_ID)
+                .build());
+
+        permissions.add(Permission.builder()
                 .name("CREATE_PERMISSION")
                 .description("Tạo quyền")
                 .createdBy(SYSTEM_USER_ID)
@@ -118,6 +124,12 @@ public class DataInitializer implements ApplicationRunner {
         permissions.add(Permission.builder()
                 .name("DELETE_PERMISSION")
                 .description("Xoá quyền")
+                .createdBy(SYSTEM_USER_ID)
+                .build());
+
+        permissions.add(Permission.builder()
+                .name("ADD_PERMISSION")
+                .description("Thêm quyền vào vai trò")
                 .createdBy(SYSTEM_USER_ID)
                 .build());
 

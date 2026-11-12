@@ -1,6 +1,7 @@
 package com.shop.identityemployeeservice.service.interfaces;
 
 import com.shop.identityemployeeservice.common.interfaces.ICrudService;
+import com.shop.identityemployeeservice.dto.request.role.AddRoleRequest;
 import com.shop.identityemployeeservice.dto.request.role.RoleRequest;
 import com.shop.identityemployeeservice.dto.response.roles.RoleResponse;
 import com.shop.identityemployeeservice.entity.Role;
@@ -14,4 +15,8 @@ public interface IRoleService extends ICrudService<RoleRequest, RoleResponse, Lo
     Role getById(Long id);
 
     List<RoleResponse> getAllRoles();
+
+    void updatePermissions(Long roleId, AddRoleRequest request);
+
+    List<String> getPermissionByName(String name);
 }

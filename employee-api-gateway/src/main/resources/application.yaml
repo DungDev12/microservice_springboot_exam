@@ -2,7 +2,10 @@ spring:
   application:
     name: employee-api-gateway
   config:
-    import: "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
+    import:
+      - "configserver:${CONFIG_GIT_SERVER:http://192.168.20.3:8888}"
+      - "vault://"
+      - optional:file:.env[.properties]
 
   cloud:
     vault:
@@ -12,7 +15,7 @@ spring:
       kv:
         enabled: true
         backend: ${VAULT_KV_BACKEND:shop}
-        default-context: ${VAULT_KV_DEFAULT:customer}
+        default-context: ${VAULT_KV_DEFAULT:employee}
         profile-separator: '/'
 
 server:

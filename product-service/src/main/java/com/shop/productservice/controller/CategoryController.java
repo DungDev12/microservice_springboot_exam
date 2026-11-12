@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +25,10 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAuthority('CREATE_CATEGORY')")
     @PostMapping("create")
     public ResponseEntity<ApiResponse<CategoryEmployeeResponse>> create(
-            @RequestHeader("X-Auth-Userid") String uuid,
+            @RequestHeader("X-Auth-UserUuid") String uuid,
             @RequestBody CreateCategoryRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
@@ -36,10 +38,11 @@ public class CategoryController {
                 );
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_CATEGORY')")
     @PutMapping("{id}/update")
     public ResponseEntity<ApiResponse<CategoryEmployeeResponse>> update(
             @PathVariable Long id,
-            @RequestHeader("X-Auth-Userid") String uuid,
+            @RequestHeader("X-Auth-UserUuid") String uuid,
             @RequestBody UpdateCategoryRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(categoryService.updateCategory(id,uuid,request),
@@ -47,6 +50,7 @@ public class CategoryController {
                         HttpStatus.OK));
     }
 
+    @PreAuthorize("hasAuthority('DELETE_CATEGORY')")
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse<?>> delete(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);

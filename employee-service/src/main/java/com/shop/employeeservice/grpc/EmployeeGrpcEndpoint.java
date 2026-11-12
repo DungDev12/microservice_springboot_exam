@@ -6,6 +6,7 @@ import com.shop.grpc.employee.EmployeeGrpcResponse;
 import com.shop.grpc.employee.EmployeeGrpcServiceGrpc;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.grpc.server.service.GrpcService;
 
@@ -28,7 +29,7 @@ public class EmployeeGrpcEndpoint extends EmployeeGrpcServiceGrpc.EmployeeGrpcSe
         } catch (Exception ex) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
-                            .withDescription("Không thể tạo hồ sơ khách")
+                            .withDescription("Không thể tạo nhân viên")
                             .asRuntimeException()
             );
         }

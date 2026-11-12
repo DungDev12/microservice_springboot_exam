@@ -1,5 +1,6 @@
 package com.shop.identityemployeeservice.controller;
 
+import com.shop.identityemployeeservice.dto.request.role.AddRoleRequest;
 import com.shop.identityemployeeservice.dto.request.role.RoleRequest;
 import com.shop.identityemployeeservice.dto.response.ApiResponse;
 import com.shop.identityemployeeservice.dto.response.roles.RoleResponse;
@@ -31,7 +32,7 @@ public class RoleController {
     @PreAuthorize("hasAuthority('CREATE_ROLE')")
     @PostMapping()
     public ResponseEntity<ApiResponse<RoleResponse>> addRole(
-            @RequestHeader("X-Auth-Userid") String userId,
+            @RequestHeader("X-Auth-UserUuid") String userId,
             @RequestBody RoleRequest roleRequest){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(roleService.create(userId,roleRequest),
@@ -42,7 +43,7 @@ public class RoleController {
     @PreAuthorize("hasAuthority('UPDATE_ROLE')")
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
-            @RequestHeader("X-Auth-Userid") String userId,
+            @RequestHeader("X-Auth-UserUuid") String userId,
             @PathVariable Long id,
             @RequestBody RoleRequest roleRequest
     ) {
@@ -52,7 +53,7 @@ public class RoleController {
                         HttpStatus.OK));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> deleteRole(
             @PathVariable Long id
@@ -60,5 +61,15 @@ public class RoleController {
         roleService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(null);
+    }
+
+    @PostMapping("/{id}/permissions")
+    public ResponseEntity<ApiResponse<?>> addPermissions(
+            @PathVariable Long id,
+            @RequestBody AddRoleRequest request
+            ){
+        roleService.updatePermissions(id,request);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Thêm quyền thành công"));
     }
 }

@@ -25,6 +25,7 @@ spring:
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:TuanDung@1207}
       connect-timeout: 2s
+
   cloud:
     vault:
       uri: ${VAULT_URI:http://192.168.20.3:8200}

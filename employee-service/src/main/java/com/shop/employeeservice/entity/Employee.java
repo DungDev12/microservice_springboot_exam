@@ -52,11 +52,9 @@ public class Employee {
         return String.format("%s %s", firstName, lastName);
     }
 
-    public void assignEmployeeCode(long number) {
-        if (this.employeeCode != null) {
-            throw new IllegalStateException("Mã nhân viên đã được cấp");
-        }
-        this.employeeCode = "%s%06d".formatted(CODE_PREFIX, number);
+    public void assignEmployeeCode(Long number) {
+        long nextNumber = (number == null? 0L : number) + 1;
+        this.employeeCode = "%s%06d".formatted(CODE_PREFIX, nextNumber);
     }
 
 }
