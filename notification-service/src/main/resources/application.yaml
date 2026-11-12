@@ -17,7 +17,7 @@ spring:
         backend: ${VAULT_KV_BACKEND:shop}
         default-context: ${VAULT_KV_DEFAULT:notification}
         profile-separator: '/'
-
+#
 #  mail:
 #    host: ${MAIL_HOST:${mail.host:smtp.gmail.com}}
 #    port: ${MAIL_PORT:${mail.port:587}}
@@ -30,9 +30,9 @@ spring:
 #          starttls:
 #            enable: true # Bật TLS
 #            required: true
-
+#
 #  kafka:
-#    bootstrap-servers: 192.168.20.3:9092
+#    bootstrap-servers: ${KAFKA_SERVER}
 #
 #    consumer:
 #      group-id: notification-service-group
