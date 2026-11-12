@@ -1,5 +1,6 @@
 package com.shop.customerservice.controller;
 
+import com.shop.customerservice.dto.request.UpdateCustomerRequest;
 import com.shop.customerservice.dto.response.ApiResponse;
 import com.shop.customerservice.entity.Customer;
 import com.shop.customerservice.service.CustomerService;
@@ -25,9 +26,13 @@ public class CustomerController {
    @PostMapping("update/info")
     public ResponseEntity<ApiResponse<?>> updateCustomerInfo(
             @RequestHeader("X-Auth-Userid") String uuid,
-            @RequestBody Customer customer
+            @RequestBody UpdateCustomerRequest request
    ){
        return ResponseEntity.status(HttpStatus.OK)
-               .body(null);
+               .body(ApiResponse.success(
+                       customerService.updateProfile(uuid,request),
+                       "Cập nhật thành công",
+                       HttpStatus.OK
+               ));
    }
 }
