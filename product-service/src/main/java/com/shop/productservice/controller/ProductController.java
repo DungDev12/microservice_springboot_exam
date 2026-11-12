@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +25,11 @@ public class ProductController {
 
     private final ProductService productService;
 
+
+    @PreAuthorize("hasAuthority('CREATE_PRODUCT')")
     @PostMapping("create")
     public ResponseEntity<ApiResponse<ProductEmployeeResponse>> create(
-            @RequestHeader("X-Auth-Userid") String uuid,
+            @RequestHeader("X-Auth-UserUuid") String uuid,
             @RequestBody CreateProductRequest request)
     {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -37,10 +40,11 @@ public class ProductController {
                 ));
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_PRODUCT')")
     @PutMapping("{id}/update")
     public ResponseEntity<ApiResponse<ProductEmployeeResponse>> updateProduct(
             @PathVariable Long id,
-            @RequestHeader("X-Auth-Userid") String uuid,
+            @RequestHeader("X-Auth-UserUuid") String uuid,
             @RequestBody UpdateProductRequest request
     ){
         return ResponseEntity.status(HttpStatus.OK)
@@ -51,6 +55,7 @@ public class ProductController {
                 ));
     }
 
+    @PreAuthorize("hasAuthority('DELETE_PRODUCT')")
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse<?>> deleteProduct(
             @PathVariable Long id

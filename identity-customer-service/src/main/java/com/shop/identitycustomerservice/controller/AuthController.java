@@ -66,56 +66,56 @@ public class AuthController {
             @Valid @RequestBody OtpVerifyRequest request
             ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(authService.otpVerifyNewAccount(request),
-                        "Xác thực thành công", HttpStatus.OK));
-    }
+                                    .body(ApiResponse.success(authService.otpVerifyNewAccount(request),
+                                            "Xác thực thành công", HttpStatus.OK));
+                        }
 
-    @PostMapping("refresh-token")
-    public ResponseEntity<ApiResponse<?>> refreshToken(
-            @Valid @RequestBody RefreshTokenRequest request
-    ){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(authService.refreshAccount(request),
-                        "Tạo token mới thành công",
-                        HttpStatus.OK));
-    }
+                        @PostMapping("refresh-token")
+                        public ResponseEntity<ApiResponse<?>> refreshToken(
+                                @Valid @RequestBody RefreshTokenRequest request
+                        ){
+                            return ResponseEntity.status(HttpStatus.OK)
+                                    .body(ApiResponse.success(authService.refreshAccount(request),
+                                            "Tạo token mới thành công",
+                                            HttpStatus.OK));
+                        }
 
-    @PostMapping("password/reset")
-    public ResponseEntity<ApiResponse<?>> forgetPassword(
-            @Valid @ModelAttribute ResetPasswordOTPRequest request
-    ){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(authService.resetPasswordOTP(request),
-                        "Gửi mã khôi phục OTP thành công", HttpStatus.OK));
-    }
+                        @PostMapping("password/reset")
+                        public ResponseEntity<ApiResponse<?>> forgetPassword(
+                                @Valid @ModelAttribute ResetPasswordOTPRequest request
+                        ){
+                            return ResponseEntity.status(HttpStatus.OK)
+                                    .body(ApiResponse.success(authService.resetPasswordOTP(request),
+                                            "Gửi mã khôi phục OTP thành công", HttpStatus.OK));
+                        }
 
-    @PostMapping("password/reset/verify-otp")
-    public ResponseEntity<ApiResponse<?>> verifyResetPasswordOtp(
-            @Valid @RequestBody OtpVerifyRequest request
-    ){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(authService.verifyOtpForResetPassword(request),
-                        "Xác nhận mã OTP thành công",
-                        HttpStatus.OK));
-    }
+                        @PostMapping("password/reset/verify-otp")
+                        public ResponseEntity<ApiResponse<?>> verifyResetPasswordOtp(
+                                @Valid @RequestBody OtpVerifyRequest request
+                        ){
+                            return ResponseEntity.status(HttpStatus.OK)
+                                    .body(ApiResponse.success(authService.verifyOtpForResetPassword(request),
+                                            "Xác nhận mã OTP thành công",
+                                            HttpStatus.OK));
+                        }
 
-    @PostMapping("password/reset/confirm")
-    public ResponseEntity<ApiResponse<?>> confirmResetPasswordOtp(
-            @Valid @RequestBody ConfirmResetPasswordRequest request
-    ){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(authService.confirmResetPasswordOtp(request),
-                        "Đổi mật khẩu thành công",
-                        HttpStatus.OK));
-    }
+                        @PostMapping("password/reset/confirm")
+                        public ResponseEntity<ApiResponse<?>> confirmResetPasswordOtp(
+                                @Valid @RequestBody ConfirmResetPasswordRequest request
+                        ){
+                            return ResponseEntity.status(HttpStatus.OK)
+                                    .body(ApiResponse.success(authService.confirmResetPasswordOtp(request),
+                                            "Đổi mật khẩu thành công",
+                                            HttpStatus.OK));
+                        }
 
-    @PostMapping("password/change-password")
-    public ResponseEntity<ApiResponse<?>> resetPasswordOtp(
-            @Valid @RequestBody ChangePasswordRequest request
-    ){
-        authService.changePassword(request);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(null,
+                        @PostMapping("password/change-password")
+                        public ResponseEntity<ApiResponse<?>> resetPasswordOtp(
+                                @Valid @RequestBody ChangePasswordRequest request
+                        ){
+                            authService.changePassword(request);
+                            return ResponseEntity.status(HttpStatus.OK)
+                                    .body(ApiResponse.success(null,
                         "Đổi lại mật khẩu thành công", HttpStatus.OK));
     }
 
