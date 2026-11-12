@@ -20,22 +20,28 @@ spring:
               uri: lb://ORDER-SERVICE
               predicates:
                 - Path=/api/orders/**,/api/payment/**
-
-vault:
-  kv:
-    enabled: true
-    backend: ${VAULT_KV_BACKEND:shop}
-    default-context: ${VAULT_KV_DEFAULT:customer}
-    profile-separator: "/"
+  vault:
+    uri: ${VAULT_URI:http://192.168.20.3:8200}
+    token: ${VAULT_TOKEN}
+    authentication: ${VAULT_CONFIG_AUTHENTICATION:TOKEN}
+    kv:
+      enabled: true
+      backend: ${VAULT_KV_BACKEND:shop}
+      default-context: ${VAULT_KV_DEFAULT:customer}
+      profile-separator: "/"
 
 server:
   port: ${SERVER_PORT:8080}
 
 eureka:
+  client:
+    service-url:
+    defaultZone: ${DEFAULT_ZONE_EUREKA}
   instance:
     prefer-ip-address: true
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 10
+
 
 otp:
   # Tạo ở link https://mariushosting.com/opensslrandhex32.html
