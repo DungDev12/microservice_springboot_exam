@@ -4,30 +4,24 @@ spring:
       server:
         webflux:
           default-filters:
-            - name: JwtAuthentication
+              - name: JwtAuthentication
           routes:
             - id: employee-service
               uri: lb://EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/employees/**
-
-            - id: identity-customer-service
-              uri: lb://IDENTITY-CUSTOMER-SERVICE
+                
+            - id: identity-employee-service
+              uri: lb://IDENTITY-EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/auth/**,/api/roles/**,/api/permissions/**,/api/accounts/**,/internal/authorization/**
-
-            - id: product-service
+                
+            - id: identity-employee-service
               uri: lb://PRODUCT-SERVICE
               predicates:
                 - Path=/api/products/**,/api/categories/**
-server:
-  port: ${SERVER_PORT:3000}
-
 eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka}
   instance:
     prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 10
+#    lease-renewal-interval-in-seconds: 5
+#    lease-expiration-duration-in-seconds: 10
