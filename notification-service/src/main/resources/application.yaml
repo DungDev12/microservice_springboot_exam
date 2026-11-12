@@ -18,41 +18,32 @@ spring:
         default-context: ${VAULT_KV_DEFAULT:notification}
         profile-separator: '/'
 
-  mail:
-    host: ${MAIL_HOST:${mail.host:smtp.gmail.com}}
-    port: ${MAIL_PORT:${mail.port:587}}
-    username: ${MAIL_USERNAME:${mail.username}}
-    password: ${MAIL_PASSWORD:${mail.password}}
-    properties:
-      mail:
-        smtp:
-          auth: true # Bật xác thực SMTP
-          starttls:
-            enable: true # Bật TLS
-            required: true
+#  mail:
+#    host: ${MAIL_HOST:${mail.host:smtp.gmail.com}}
+#    port: ${MAIL_PORT:${mail.port:587}}
+#    username: ${MAIL_USERNAME:${mail.username}}
+#    password: ${MAIL_PASSWORD:${mail.password}}
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true # Bật xác thực SMTP
+#          starttls:
+#            enable: true # Bật TLS
+#            required: true
 
-  kafka:
-    bootstrap-servers: 192.168.20.3:9092
-
-    consumer:
-      group-id: notification-service-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-
-      properties:
-        spring.json.trusted.packages: "com.shop.notificationservice.dto.events"
-        spring.json.use.type.headers: true
-        spring.json.type.mapping: >-
-          otp:com.shop.notificationservice.dto.events.OtpNotificationEvent,
-          welcome:com.shop.notificationservice.dto.events.NotificationEvent,
-          transferSuccess:com.shop.notificationservice.dto.events.TransferNotificationEvent
-
-
-server:
-  port: ${SERVER_PORT:8989}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${DEFAULT_ZONE_EUREKA:http://192.168.20.3:8761/eureka/}
+#  kafka:
+#    bootstrap-servers: 192.168.20.3:9092
+#
+#    consumer:
+#      group-id: notification-service-group
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#
+#      properties:
+#        spring.json.trusted.packages: "com.shop.notificationservice.dto.events"
+#        spring.json.use.type.headers: true
+#        spring.json.type.mapping: >-
+#          otp:com.shop.notificationservice.dto.events.OtpNotificationEvent,
+#          welcome:com.shop.notificationservice.dto.events.NotificationEvent,
+#          transferSuccess:com.shop.notificationservice.dto.events.TransferNotificationEvent

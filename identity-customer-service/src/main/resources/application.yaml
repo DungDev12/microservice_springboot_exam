@@ -36,4 +36,3 @@ spring:
 #        spring.json.type.mapping: >-
 #          otp:com.shop.identitycustomerservice.event.OtpNotificationEvent,
 #          welcome:com.shop.identitycustomerservice.event.NotificationEvent
-         
