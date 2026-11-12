@@ -14,7 +14,9 @@ spring:
       host: 0.0.0.0
 
 server:
-  port: ${SERVER_PORT:3005}
+  port: ${DB_URL=jdbc:postgresql://localhost:5432/test
+DB_USERNAME=tuandung
+DB_PASSWORD=TuanDung@1207:3005}
 
 eureka:
   client:
