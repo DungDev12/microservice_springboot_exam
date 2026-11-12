@@ -3,19 +3,23 @@ spring:
     gateway:
       server:
         webflux:
+          default-filters:
+              - name: JwtAuthentication
           routes:
             - id: employee-service
               uri: lb://EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/employees/**
-              filters:
-                - JwtAuthentication
+                
             - id: identity-employee-service
               uri: lb://IDENTITY-EMPLOYEE-SERVICE
               predicates:
                 - Path=/api/auth/**,/api/roles/**,/api/permissions/**,/api/accounts/**
-              filters:
-                - JwtAuthentication
+                
+            - id: identity-employee-service
+              uri: lb://PRODUCT-SERVICE
+              predicates:
+                - Path=/api/products/**,/api/categories/**
 eureka:
   instance:
     prefer-ip-address: true
