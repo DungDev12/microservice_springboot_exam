@@ -7,9 +7,12 @@ spring:
       - "vault://"
       - "optional:file:.env[.properties]"
 
+  vault:
+    uri: ${VAULT_URI:http://192.168.20.3:8200}
+    token: ${VAULT_TOKEN}
+    authentication: ${VAULT_CONFIG_AUTHENTICATION:TOKEN}
 
-
-
-
-
-
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE_EUREKA}
